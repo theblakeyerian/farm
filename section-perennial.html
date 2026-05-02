@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Perennial Garden</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#1a4a3d;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Click any table cell to edit text. Add or remove rows. Changes saved to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode active</span>
+  <button class="btn btn-save" onclick="saveData()">Save changes</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+  <button class="btn btn-add" onclick="addRow('species-table',12)">+ Add species row</button>
+  <button class="btn btn-add" onclick="addRow('tools-table',4)">+ Add tool</button>
+</div>
+
+<!-- SECTION HEADER -->
+<div class="sec-hdr">
+  <span style="font-size:20px">&#127807;</span>
+  <h2>Perennial Garden &mdash; Plots P1&ndash;P4</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">
+    <span class="bdg">$55,000/yr gross (Year 3+)</span>
+    <span class="bdg">~400 hrs/yr &middot; declining</span>
+    <span class="bdg">54 species &middot; 4-ft rows &middot; permanent</span>
+  </div>
+</div>
+<div class="sb">
+  <div class="sub-tabs" style="border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;display:flex;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'per','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'per','species')">All 54 Species</div>
+    <div class="sub-tab" onclick="subTab(this,'per','harvest')">Monthly Harvest</div>
+    <div class="sub-tab" onclick="subTab(this,'per','priority')">Planting Priority</div>
+    <div class="sub-tab" onclick="subTab(this,'per','tools')">Tools</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="per-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Plot P1 — Culinary herbs</div><div class="mc-v">$18,000/yr</div><div class="mc-s">Dill 20%, cilantro 15%, thyme 15%, chives 15%, oregano+sage 10%…</div></div>
+      <div class="mc"><div class="mc-l">Plot P2 — Specialty + medicinals</div><div class="mc-v">$14,000/yr</div><div class="mc-s">Sorrel 20%, lavender 15%, cutting celery 15%, lovage, lemon verbena…</div></div>
+      <div class="mc"><div class="mc-l">Plot P3 — Berry shrubs</div><div class="mc-v">$12,000/yr</div><div class="mc-s">Strawberry 32%, elderberry 16%, currants, gooseberry, aronia…</div></div>
+      <div class="mc"><div class="mc-l">Plot P4 — Perennial veg + roots</div><div class="mc-v">$16,000/yr</div><div class="mc-s">Asparagus 32%, turmeric 12%, ginger 12%, wet margin, rhubarb…</div></div>
+    </div>
+    <div class="note">pH 6.6 suits every species in this plan — no amendment ever needed. Asparagus occupies 32% of P4 (265 crowns) because its 30&ndash;50 year productive life and April market dominance justify large upfront allocation. Comfrey Bocking 14 distributed throughout all plots provides free potassium, calcium, and phosphorus. Sorrel is the first harvest of the year (February) — the moment the farm stops looking dormant and starts earning. The 2&times; perennial weighting reflects that established perennial plots require approximately half the labor per dollar compared to annual vegetable ground.</div>
+    <p class="sl" style="margin-top:14px">Why the 2&times; perennial weighting &mdash; revenue per labor hour at Year 5 maturity</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">
+      <div class="mc"><div class="mc-l">Perennial revenue (Year 5+)</div><div class="mc-v" style="color:#1a4a3d">$55,000/yr</div><div class="mc-s">4 plots, ~150 hrs/yr labor at maturity</div></div>
+      <div class="mc"><div class="mc-l">Perennial revenue per hour</div><div class="mc-v" style="color:#1a4a3d">$367/hr</div><div class="mc-s">Revenue &divide; labor &mdash; compounding each year as system matures</div></div>
+      <div class="mc"><div class="mc-l">Annual veg revenue</div><div class="mc-v" style="color:#2d5a1b">$56,500/yr</div><div class="mc-s">8 plots, ~780 hrs/yr labor every year</div></div>
+      <div class="mc"><div class="mc-l">Annual veg revenue per hour</div><div class="mc-v" style="color:#2d5a1b">$72/hr</div><div class="mc-s">Revenue &divide; labor &mdash; consistent but never improves</div></div>
+    </div>
+    <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:10px">
+      <div style="background:#1a4a3d;color:#c0e8d8;padding:7px 10px;font-size:11px;font-weight:500">The real case for perennial priority &mdash; 5&times; revenue per hour by Year 5</div>
+      <div style="padding:10px;font-size:12px;color:#444;line-height:1.7">
+        The 2&times; weighting in the demand index understates the advantage. Perennials generate <strong>$367/hr vs. $72/hr for annuals</strong> &mdash; a true 5&times; labor efficiency advantage at maturity. This ratio improves every year as the perennial system becomes more self-sustaining (comfrey replacing purchased inputs, crowns expanding without replanting, soil biology deepening). By Year 10, the perennial plots are generating roughly the same revenue from perhaps 80 hours of labor per year &mdash; pushing the ratio toward $700+/hr. The annual garden always requires the same 780 hours regardless of year.<br><br>
+        <strong>Practical implication:</strong> In any year where labor is the binding constraint (which it is &mdash; see the 272-hr March peak), the perennial system generates revenue with far less of it. Establishing all four perennial plots completely and correctly in Year 0 is the highest-ROI investment on the farm.
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL 54 SPECIES -->
+  <div id="per-species" class="sub-panel">
+    <p class="sl">All 54 species &mdash; sorted by first harvest month &middot; Zone 7b &middot; Lancaster County, Virginia &middot; last frost Mar 25</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="species-table">
+      <thead><tr>
+        <th>#</th><th>Common Name</th><th>Category</th><th>Plot</th>
+        <th>Plant Date</th><th>1st Harvest</th><th>Peak Window</th><th>Last Harvest</th>
+        <th>Yrs</th><th>Spacing</th><th>Sun</th><th>Notes — Zone 7b</th><th style="width:30px"></th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">JAN — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">1</td>
+<td data-edit style="font-weight:500">Bay Laurel</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jan</td>
+<td data-edit style="color:#555">Jan–Dec</td>
+<td data-edit style="color:#888">Dec</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">4–6 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Evergreen; harvest year-round. Fresh bay more floral than dried. Essential for crab boil, court-bouillon. One plant exceeds any restaurant account demand. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">2</td>
+<td data-edit style="font-weight:500">Common Thyme</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jan</td>
+<td data-edit style="color:#555">Jan–Dec</td>
+<td data-edit style="color:#888">Dec</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">18–24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Year-round harvest. Divide every 3 yrs. Dry surplus for winter. High-volume staple. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">3</td>
+<td data-edit style="font-weight:500">Lemon Thyme</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jan</td>
+<td data-edit style="color:#555">Jan–Dec</td>
+<td data-edit style="color:#888">Dec</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">18–24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">More aromatic than common thyme. Citrus-forward. Fish preparations, butter sauces, roasted shellfish. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">4</td>
+<td data-edit style="font-weight:500">Rosemary</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jan</td>
+<td data-edit style="color:#555">Jan–Dec</td>
+<td data-edit style="color:#888">Dec</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Arp or Tuscan Blue. Permanent 4-ft shrub. Most important volume herb for consistent weekly restaurant and market sales. Best drainage. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">FEB — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">5</td>
+<td data-edit style="font-weight:500">Sorrel</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr crowns or Sep seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Feb</td>
+<td data-edit style="color:#555">Feb–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">FIRST perennial to harvest — February. Lemon-acid flavor. Sought by chefs for rockfish, sole, oyster preparations. Divide annually. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">6</td>
+<td data-edit style="font-weight:500">Walking Onion</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Sep–Oct preferred (sets)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Feb</td>
+<td data-edit style="color:#555">Feb–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Self-perpetuating — topsets fall and replant. Zero management after Year 1. Expands permanently. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">MAR — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">7</td>
+<td data-edit style="font-weight:500">Anise Hyssop</td>
+<td data-edit><span style="background:#fef0e6;color:#8a4a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Edible Flower</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Self-seeds — permanent after Year 1. Licorice-scented. Edible garnish and dried herbal tea. Major pollinator. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">8</td>
+<td data-edit style="font-weight:500">Bee Balm / Monarda</td>
+<td data-edit><span style="background:#fef0e6;color:#8a4a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Edible Flower</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr crown division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Native. Edible flowers + leaves, bergamot flavor. Seafood compound butters. Divide every 3 years. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">9</td>
+<td data-edit style="font-weight:500">Chives</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Divide every 2 years. Globe flowers Apr–May edible garnish. Chive blossom vinegar $8–12/bottle premium product. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">10</td>
+<td data-edit style="font-weight:500">Cilantro</td>
+<td data-edit><span style="background:#f5f0de;color:#6a5a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Self-Seeding Annual</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar 1 and Aug 15 direct seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–May / Aug–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Permanent via self-seeding. Spring and fall ONLY — never summer in Zone 7b. Coriander seed also a culinary spice. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">11</td>
+<td data-edit style="font-weight:500">Common Fennel</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">2–3 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Species fennel not Florence fennel. Self-seeds vigorously — keep contained. Fronds like dill in fish preparations. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">12</td>
+<td data-edit style="font-weight:500">Cutting Celery / Par-cel</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">12–18 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Essential for she-crab soup, crab bisque, seafood stocks. Biennial overwintered as perennial. Zero local competition. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">13</td>
+<td data-edit style="font-weight:500">Echinacea</td>
+<td data-edit><span style="background:#fef0e6;color:#8a4a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Edible Flower</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">18–24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Flowers Jul–Aug primary market product. Roots harvested yr 3+. Dried medicinal herb market. Self-seeds. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">14</td>
+<td data-edit style="font-weight:500">French Tarragon</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr VEGETATIVE DIVISION ONLY</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">MUST be true French type. Vegetative division only — never from seed. Béarnaise, Oysters Rockefeller. Highest margin/unit herb. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">15</td>
+<td data-edit style="font-weight:500">Garlic Chives</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Garlic flavor. White star flowers August edible and beautiful at market. Asian-influenced seafood preparations. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">16</td>
+<td data-edit style="font-weight:500">Horseradish</td>
+<td data-edit><span style="background:#fce4d6;color:#7a2d00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Root / Rhizome</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr root divisions — CONTAINED</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">Contained</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Physical root barrier below. Spring leaves edible. Main root harvest Oct–Nov. VA oysters + fresh horseradish — classic Northern Neck pairing. $4–8/root. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">17</td>
+<td data-edit style="font-weight:500">Lemon Balm</td>
+<td data-edit><span style="background:#f3eefb;color:#4a2d8a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Medicinal</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr crown division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Define zone — spreads. Herbal tea market with real repeat demand. Major bee forage. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">18</td>
+<td data-edit style="font-weight:500">Lovage</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/seed/crown</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Quarts of celery-flavored leaves per plant per year for decades. Unknown at any VA market — zero competition. Essential for she-crab soup. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">19</td>
+<td data-edit style="font-weight:500">Mint — Peppermint</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr — BURIED POTS</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">Contained</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Contain in pots buried to rim. Stronger menthol than spearmint. Keep varieties separated. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">20</td>
+<td data-edit style="font-weight:500">Mint — Spearmint</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr — BURIED POTS</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">Contained</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Physical containment essential — aggressive rhizomes. Highest-frequency herb in American cooking. Mint juleps, sauce, tea. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">21</td>
+<td data-edit style="font-weight:500">Oregano</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division/transplant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">18–24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Italian preferred over Greek. Heat intensifies flavor. Dry excess for winter sales. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">22</td>
+<td data-edit style="font-weight:500">Parsley — Flat-Leaf Italian</td>
+<td data-edit><span style="background:#f5f0de;color:#6a5a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Self-Seeding Biennial</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Start indoors Feb 1; transplant Mar 15</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">12 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Biennial self-seeds — plant once, perpetuates. Most-purchased fresh herb in US. Let some bolt each spring. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">23</td>
+<td data-edit style="font-weight:500">Sage</td>
+<td data-edit><span style="background:#eaf3de;color:#2d5a1b;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary Staple</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant/division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–36 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Berggarten for ornamental leaves. Pairs with seafood stuffings and chowders. Dry summer harvest. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">24</td>
+<td data-edit style="font-weight:500">Valerian</td>
+<td data-edit><span style="background:#f3eefb;color:#4a2d8a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Medicinal</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Medicinal root harvested yr 2+. Calming/sleep preparation — highest-value dried medicinal products. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">25</td>
+<td data-edit style="font-weight:500">Watercress</td>
+<td data-edit><span style="background:#e0f5f5;color:#1a6a6a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Wet Margin</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr cuttings into wet margin</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Jun</td>
+<td data-edit style="color:#888">Jun</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Part</td>
+<td data-edit style="font-size:10px;color:#444">Lower moist section P4. Oyster salads, smoked fish garnish. Spring and fall harvest only. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">26</td>
+<td data-edit style="font-weight:500">Welsh Onion</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr seed/division or Sep–Oct</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Fully perennial bunching onion — never bolts. Divides continuously. Produces only leaves, no topsets. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">27</td>
+<td data-edit style="font-weight:500">Yarrow</td>
+<td data-edit><span style="background:#fef0e6;color:#8a4a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Edible Flower</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr division/transplant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Mar</td>
+<td data-edit style="color:#555">Mar–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">18–24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Native. Indestructible. Dried flower bundles. Zero ongoing maintenance. Major beneficial insect plant. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">APR — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">28</td>
+<td data-edit style="font-weight:500">Asparagus</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar 15–Apr 15 bare-root 6–8 in deep</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–May</td>
+<td data-edit style="color:#888">May</td>
+<td data-edit style="text-align:center;color:#888">2–3</td>
+<td data-edit style="color:#555">18 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">30–50 year perennial. pH 6.6 ideal. First harvest yr 2; prime yr 3+. Do NOT harvest Year 1. Most consistent early-season income. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">29</td>
+<td data-edit style="font-weight:500">Good King Henry</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr seed/crown division</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Ancient European perennial. Young shoots in April eaten like asparagus. Self-managing after establishment. Genuine novelty. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">30</td>
+<td data-edit style="font-weight:500">Lemon Verbena</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Apr–May transplant after frost</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Dies back in winter, returns in spring. Intensely lemon-scented. Fish butter, cream sauce. South-facing sheltered position. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">31</td>
+<td data-edit style="font-weight:500">NZ Spinach</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Apr 15–May 1 after last frost</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Warm-season perennial. Heat-tolerant. Fills July–August spinach gap entirely. Self-seeds reliably. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">32</td>
+<td data-edit style="font-weight:500">Perpetual Spinach</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr seed/transplant or Oct</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">12 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Chard relative — no bolting in summer heat. Biennial self-seeds. More productive in Zone 7b than true spinach. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">33</td>
+<td data-edit style="font-weight:500">Rhubarb</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr 15 bare-root crowns</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Jun</td>
+<td data-edit style="color:#888">Jun</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Stalks only — LEAVES TOXIC. Victoria and Crimson Red for Zone 7b. Classic spring market item. Pairs with strawberries. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">34</td>
+<td data-edit style="font-weight:500">Skirret</td>
+<td data-edit><span style="background:#fce4d6;color:#7a2d00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Root / Rhizome</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr root division/seed</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">12 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Sweet parsnip-flavored roots. Unknown to most modern growers. Chefs immediately interested when shown root. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">35</td>
+<td data-edit style="font-weight:500">Tree Collard</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr stem cuttings ONLY</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Dec</td>
+<td data-edit style="color:#888">Dec</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">4–6 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Perennial brassica shrub. Most productive fall–spring. Zone 7b marginal — mulch heavily, take fall insurance cuttings. Stem cuttings only. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">36</td>
+<td data-edit style="font-weight:500">Vietnamese Coriander</td>
+<td data-edit><span style="background:#e0f5f5;color:#1a6a6a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Wet Margin</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Apr–May division after frost</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Apr</td>
+<td data-edit style="color:#555">Apr–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–30 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Wet margin perennial. Extraordinary with raw shellfish, crab, shrimp. Almost impossible to find fresh in Virginia. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">MAY — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">37</td>
+<td data-edit style="font-weight:500">Comfrey — Bocking 14</td>
+<td data-edit><span style="background:#f0f0f0;color:#666;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Support Plant</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">All</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr crown divisions</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Sterile variety. Deep roots mine calcium, potassium, phosphorus. Chop-and-drop 4–6x/season. Primary on-farm fertility. ★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">38</td>
+<td data-edit style="font-weight:500">Dill</td>
+<td data-edit><span style="background:#f5f0de;color:#6a5a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Self-Seeding Annual</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P1</td>
+<td data-edit style="font-size:11px;color:#555">Apr 1 direct seed; every 3 weeks</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–12 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Permanent via self-seeding after Year 1. Classic crab herb. Sell fronds AND seed heads separately. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">39</td>
+<td data-edit style="font-weight:500">Elderberry</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root lowest section</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Jun flower / Aug–Sep berry</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">6–8 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Two-harvest plant. Elderflower May–Jun ($10–15/bottle). Elderberries Aug–Sep ($20–30/lb dried). Cook or dry berries. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">40</td>
+<td data-edit style="font-weight:500">Globe Artichoke — Emerald</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Start Jan 15–Feb 1; transplant Apr 15–May 1</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Jul</td>
+<td data-edit style="color:#888">Jul</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Emerald variety only — perennial Zone 7+. Hilltop drainage critical. 12+ in. straw mulch + basket cover in winter. 6–12 buds/plant. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">41</td>
+<td data-edit style="font-weight:500">Scarlet Runner Bean</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">May 1–15 direct sow after frost</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">Jun–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">12 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Overwinters Zone 7b under 4–6 in. mulch. Needs post or teepee — climbs 10+ ft. Nitrogen fixer. Edible pods, seeds, dried beans. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">42</td>
+<td data-edit style="font-weight:500">Sea Beans / Glasswort</td>
+<td data-edit><span style="background:#e0f5f5;color:#1a6a6a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Wet Margin</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Apr–May direct seed native soil</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">6–8 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Native to Virginia Coastal Plain. Salty snapping crunch. Sauté under grilled rockfish or oysters. Most locally-specific ingredient on property. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">43</td>
+<td data-edit style="font-weight:500">Strawberry</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root (fall preferred)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">May</td>
+<td data-edit style="color:#555">May–Jun</td>
+<td data-edit style="color:#888">Jun</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">18 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">First berry to market — late May. June-bearing + everbearing mix. Sell same-day for peak premium. Renovate every 4 years. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">JUN — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">44</td>
+<td data-edit style="font-weight:500">Currant — Black</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root dormant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jun</td>
+<td data-edit style="color:#555">Jun–Jul</td>
+<td data-edit style="color:#888">Jul</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Ben Sarek; thornless. Cassis flavor is premium restaurant ingredient. Commands curiosity and price at market. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">45</td>
+<td data-edit style="font-weight:500">Currant — Red</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root dormant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jun</td>
+<td data-edit style="color:#555">Jun–Jul</td>
+<td data-edit style="color:#888">Jul</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Rovada + Red Lake; thornless. Tart bright clusters sell immediately. Jam, jelly, savory rockfish compote. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">46</td>
+<td data-edit style="font-weight:500">Currant — White</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root dormant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jun</td>
+<td data-edit style="color:#555">Jun–Jul</td>
+<td data-edit style="color:#888">Jul</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Blanka variety; thornless. Unusual translucent pearl-white clusters. Novelty factor creates customer engagement. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">47</td>
+<td data-edit style="font-weight:500">Gooseberry — Thornless</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root dormant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jun</td>
+<td data-edit style="color:#555">Jun–Jul</td>
+<td data-edit style="color:#888">Jul</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Hinnomaki Red + Poorman. Rarely seen at Mid-Atlantic markets. Chefs use for compotes with rockfish. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">JUL — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">48</td>
+<td data-edit style="font-weight:500">Aronia — Black Chokeberry</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr bare-root dormant</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jul</td>
+<td data-edit style="color:#555">Aug–Sep</td>
+<td data-edit style="color:#888">Sep</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Indestructible native. Tolerates wet Coastal Plain soil. Highest-antioxidant temperate fruit. Zero maintenance once established. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">49</td>
+<td data-edit style="font-weight:500">Goji Berry</td>
+<td data-edit><span style="background:#fde8f0;color:#8a1a4a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Berry Shrub</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P3</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant (Crimson Star)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jul</td>
+<td data-edit style="color:#555">Jul–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">2</td>
+<td data-edit style="color:#555">4–5 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">$20–40/lb dried. Fresh goji is genuine novelty — no current Virginia competition. Spreads by runners — define section. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">50</td>
+<td data-edit style="font-weight:500">Lavender — Phenomenal</td>
+<td data-edit><span style="background:#f3eefb;color:#4a2d8a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Culinary/Medicinal</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr transplant (Phenomenal/Grosso ONLY)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Jul</td>
+<td data-edit style="color:#555">Jul–Aug</td>
+<td data-edit style="color:#888">Aug</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">24–36 in</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Phenomenal and Grosso ONLY — humidity tolerant. DRAINAGE is critical. Highest per-lb dried herb value. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">SEP — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">51</td>
+<td data-edit style="font-weight:500">Ginger</td>
+<td data-edit><span style="background:#fce4d6;color:#7a2d00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Root / Rhizome</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">May 1–15 (soil 65°F+)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Sep</td>
+<td data-edit style="color:#555">Sep–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">12–18 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Root-perennial with heavy straw mulch. Fresh ginger more floral and complex than store-bought. $6–12/lb. Replant 20–30% each spring. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">52</td>
+<td data-edit style="font-weight:500">Lemongrass</td>
+<td data-edit><span style="background:#e8f0fb;color:#1a3a7a;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Herb — Specialty</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P2</td>
+<td data-edit style="font-size:11px;color:#555">May 1–15 division after frost</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Sep</td>
+<td data-edit style="color:#555">Sep–Oct</td>
+<td data-edit style="color:#888">Oct</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">3–4 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">Root-perennial with heavy mulch. Rare at any VA market. Restaurant demand real. Keep one pot indoors as insurance. ★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">53</td>
+<td data-edit style="font-weight:500">Turmeric</td>
+<td data-edit><span style="background:#fce4d6;color:#7a2d00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Root / Rhizome</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">May 1–15 (soil 65°F+)</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Sep</td>
+<td data-edit style="color:#555">Sep–Nov</td>
+<td data-edit style="color:#888">Nov</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">12–18 in</td>
+<td data-edit style="text-align:center;color:#888">F/P</td>
+<td data-edit style="font-size:10px;color:#444">Root-perennial with 6+ in. straw mulch. Cure 2 weeks at room temp. Fresh turmeric $8–15/lb. Restaurants strongly prefer fresh. ★★★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+<tr style="background:#2d5a1b"><td colspan="13" style="color:#fff;font-weight:600;padding:5px 8px">OCT — HARVEST BEGINS</td></tr>
+<tr>
+<td data-edit style="color:#888;text-align:right">54</td>
+<td data-edit style="font-weight:500">Jerusalem Artichoke / Sunchoke</td>
+<td data-edit><span style="background:#fff3e0;color:#7a4a00;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600">Perennial Vegetable</span></td>
+<td data-edit style="font-weight:600;color:#2d5a1b;text-align:center">P4</td>
+<td data-edit style="font-size:11px;color:#555">Mar–Apr tubers — CONTAINED SECTION</td>
+<td data-edit style="font-weight:600;color:#1a4a3d">Oct</td>
+<td data-edit style="color:#555">Oct–Jan</td>
+<td data-edit style="color:#888">Jan</td>
+<td data-edit style="text-align:center;color:#888">1</td>
+<td data-edit style="color:#555">3 ft</td>
+<td data-edit style="text-align:center;color:#888">Full</td>
+<td data-edit style="font-size:10px;color:#444">CONTAINED — spreads from missed tubers. Sweetest after multiple frosts. Sep flowers sell as cut flower product. ★★★</td>
+<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td>
+</tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- MONTHLY HARVEST -->
+  <div id="per-harvest" class="sub-panel">
+    <p class="sl">Monthly harvest calendar &mdash; perennial system at Year 3 maturity</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="harvest-table">
+      <thead><tr><th>Month</th><th>Harvestable and saleable</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit><b>January</b></td><td data-edit>Rosemary, bay laurel, lemon thyme, common thyme (year-round evergreens). Dried herb inventory. Stored turmeric, ginger, horseradish roots.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>February</b></td><td data-edit>+ SORREL (first fresh crop of the year — the farm comes alive). Walking onion green tops. Welsh onion greens.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>March</b></td><td data-edit>+ Chives, garlic chives, lovage first shoots, lemon balm, mint, oregano, sage, French tarragon, cutting celery, watercress, fennel fronds, parsley overwintered crowns. Horseradish spring greens. Cilantro first planting (harvest in 3–4 weeks).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>April</b></td><td data-edit>+ ASPARAGUS (April anchor event). Rhubarb begins. Lemon verbena leafing out. Good King Henry shoots (like asparagus). Skirret spring greens. Vietnamese coriander. Sea beans beginning. Perpetual spinach full. NZ spinach emerging. Tree collard leaves.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>May</b></td><td data-edit>+ STRAWBERRIES (first flush — sell same-day). Elderflower (late May, 2–3 week window, $10–15/bottle cordial). Globe artichoke first small buds (Year 2+). Rhubarb peak. Comfrey first cut for mulch. Sea beans growing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>June</b></td><td data-edit>+ Strawberry peak. Elderflower peak (early June then done — window closes). Currants — red, black, white. Gooseberry. Bee balm in flower. Yarrow. Dill at peak fronds. Artichoke buds harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>July</b></td><td data-edit>+ LAVENDER peak harvest ($6–12/dried bundle). Goji berry first. Aronia berries beginning. Echinacea flowers. Anise hyssop full spikes. Garlic chive flowers (edible). Scarlet runner bean pods. NZ spinach peak.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>August</b></td><td data-edit>+ Elderberry berries ($20–30/lb dried — cook or dry before sale). Aronia peak. Goji peak. Lemongrass harvest. Sunchoke flowers (sell as cut flower). Tree collard renewed vigor.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>September</b></td><td data-edit>+ TURMERIC harvest begins ($8–15/lb fresh). GINGER harvest begins ($6–12/lb fresh). Lemongrass peak. Aronia closing. Perpetual spinach renewed fall production. Cilantro second planting producing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>October</b></td><td data-edit>+ SUNCHOKE tubers (frost-sweetened). Horseradish root main harvest ($4–8/root — display a grater at market). Turmeric main harvest. Ginger main harvest. Sorrel still producing. Fennel seed harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>November</b></td><td data-edit>+ Sunchoke (sweetest now — multiple frosts). Horseradish ongoing. Tree collard peak. Perpetual spinach and NZ spinach in mild periods. Watercress fall window.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><b>December</b></td><td data-edit>Rosemary, bay, lemon thyme, thyme (evergreens). Dried elderberries, dried aronia, elderflower cordial, dried lavender, herb mixes, stored turmeric and ginger. Tree collard if mild. Holiday gift sales.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- PLANTING PRIORITY -->
+  <div id="per-priority" class="sub-panel">
+    <p class="sl">Year-by-year planting priority — fastest to income first, long-build plants established early</p>
+    <div class="warn">Turmeric, ginger, and lemongrass wait until soil reaches 65&deg;F (May 1&ndash;15). Do not rush — cold soil causes rhizome rot.</div>
+    <div class="tbl-wrap" style="margin-top:10px">
+    <table class="tbl" data-table="priority-table">
+      <thead><tr><th>Phase</th><th>What to plant / establish</th><th>First earnings from this group</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit style="font-weight:600;white-space:nowrap;background:#1a2e14;color:#8db87a">YEAR 0 Fall / Winter (Sep start)</td><td data-edit>ALL perennial herbs from divisions: P1: rosemary, lemon thyme, common thyme, chives, garlic chives, Welsh onion, oregano, sage, fennel (contained), mint (in buried pots), lemon balm, French tarragon (divisions only). P2: sorrel, lovage, bay laurel, lemon verbena, cutting celery, echinacea, yarrow, bee balm, anise hyssop, valerian. COMFREY: plant Bocking 14 throughout all four plots near every planned perennial. Wet margin: watercress cuttings into wet edge of Plot 4.</td><td data-edit>Year 1 (immediately): rosemary, thyme, bay, lemon thyme year-round. Year 1 (Feb): sorrel — first fresh herb. Year 1 (Mar): chives, lovage, oregano, sage, tarragon, cutting celery, fennel, parsley. Year 1 (Apr): lemon verbena, Vietnamese coriander.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit style="font-weight:600;white-space:nowrap;background:#1a2e14;color:#8db87a">YEAR 0 Fall</td><td data-edit>ALL bare-root perennials: Asparagus crowns (Jersey Knight + Jersey Supreme) — 6–8 in. deep, 18-in. spacing. Rhubarb crowns (Victoria, Crimson Red). Walking onion sets — Sep planting preferred. Good King Henry, skirret crowns. ALL berry shrubs bare-root: Elderberry (lowest wettest section), aronia, currants (red/black/white), gooseberry (Hinnomaki Red + Poorman), goji berry. Strawberry: plant dormant crowns in fall for strong spring establishment.</td><td data-edit>Year 1: elderflower (June), strawberry (May), currants (Jun–Jul). Year 2: asparagus light first harvest, rhubarb light. Year 3: asparagus building toward prime years.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit style="font-weight:600;white-space:nowrap;background:#2d5a1b;color:#fff">YEAR 1 Spring (after Mar 25 frost)</td><td data-edit>Globe artichoke (Emerald only) — start indoors Jan 15–Feb 1; transplant Apr 15–May 1. Tree collard cuttings — root in water in March; plant out April. Perpetual spinach — direct seed March. Parsley — transplant Mar–Apr. Dill — first direct seeding April 1; let self-seed thereafter. Cilantro — Mar 1 spring window; Aug 15 fall window. Scarlet runner bean — direct sow May 1–15. After soil 65°F: turmeric, ginger, and lemongrass.</td><td data-edit>Year 1 (May–Jun): artichoke small harvest (better Year 2+). Year 1 (May–Oct): dill, cilantro, perpetual spinach. Year 1 (Jun–Oct): scarlet runner bean pods. Year 1 (Sep–Nov): turmeric, ginger, lemongrass first harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit style="font-weight:600;white-space:nowrap;background:#3B6D11;color:#fff">YEAR 2+ Ongoing</td><td data-edit>Divide and expand all established herbs — chives, sorrel, lovage, lemon balm, bee balm, yarrow divide readily each spring. Expand elderberry from February hardwood cuttings. Lavender — add Phenomenal/Grosso transplants in P2 raised section. Expand turmeric and ginger from saved rhizomes (replant 20–30% of each fall harvest). Renovate strawberry beds every 4 years. Allow dill, cilantro, fennel, and parsley to self-seed — manage population rather than replanting.</td><td data-edit>Compounding returns each year. Elderberry major income Year 3+. Asparagus enters prime production Years 3–20. Globe artichoke full production Year 3+. Full herb garden running at near-zero annual cost from Year 3 onward.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div id="per-tools" class="sub-panel">
+    <p class="sl">Tools for perennial garden &mdash; edit name, cost, notes freely</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="tools-table">
+      <thead><tr><th>Tool</th><th>Cost</th><th>Frequency</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Felco #2 hand pruners</td><td data-edit>~$65/pair</td><td data-edit>Daily (harvest season)</td><td data-edit>Primary harvest tool for herbs, berries, flowers. Swiss-made, fully repairable. One pair lasts decades with annual blade maintenance.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Broadfork</td><td data-edit>~$120 one-time</td><td data-edit>Year 0 only</td><td data-edit>Used once for initial bed prep before permanent no-till. Never needed again after first season. Do not till after establishment.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Digging fork (ball-point tines)</td><td data-edit>~$80</td><td data-edit>Fall harvest</td><td data-edit>For ginger, turmeric, horseradish, skirret, sunchoke. Ball-point tines prevent root damage. Fall use only.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Herb drying racks + mesh screens</td><td data-edit>~$40–80</td><td data-edit>Jul–Nov (drying season)</td><td data-edit>For lavender, oregano, thyme, echinacea, elderflower, elder. Hang or screen-dry in covered shade with airflow. Critical for fall market dried product inventory.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Shallow berry harvest trays</td><td data-edit>~$15–30 each (need 8+)</td><td data-edit>May–Sep (berry season)</td><td data-edit>Flat trays prevent crushing during strawberry, currant, gooseberry harvest. Multiple trays needed at peak June harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Drip irrigation (permanent install)</td><td data-edit>~$150–300/plot</td><td data-edit>Permanent — install Year 0</td><td data-edit>Installed once. Soaker hose for herb rows; emitter drip for berry shrubs and asparagus. Timer for 6 AM watering. Critical for establishment in first dry season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Compost tea brewer (5-gal bucket + aquarium pump)</td><td data-edit>~$20 brewer + $60 sprayer</td><td data-edit>Every 2–3 weeks in season</td><td data-edit>Brew from on-farm compost: feed + water 24–36 hrs aerated. Apply as soil drench. Delivers microbial populations to root zone. Primary fertility tool on CEC 2.48 soil.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Heavy serrated knife (comfrey chop)</td><td data-edit>~$25</td><td data-edit>4–6x per season</td><td data-edit>For Bocking 14 chop-and-drop. Cut entire plant to ground, leave as mulch. Over 5 years provides all potassium, calcium, and phosphorus from the land itself — purchased inputs approach zero.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Wheelbarrow (heavy-duty)</td><td data-edit>~$120</td><td data-edit>Weekly</td><td data-edit>Compost transport, mulch distribution, berry harvest crate transport. Wide path in P3 specifically sized for wheelbarrow access during berry harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Root barrier (corrugated plastic sheet)</td><td data-edit>~$20–40/section</td><td data-edit>Year 0 install — permanent</td><td data-edit>For horseradish and sunchoke containment. Physical barrier 18+ in. deep. Install before planting. Without it both spread aggressively from any missed fragment.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Knee pads + harvest apron</td><td data-edit>~$30</td><td data-edit>Daily</td><td data-edit>Perennial harvest involves a lot of low-work (strawberries, ground-level herbs). Knee pads reduce fatigue significantly over a full harvest season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+</script>
+</body>
+</html>

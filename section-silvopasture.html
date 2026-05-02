@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Silvopasture</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#3d2b7a;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+.mat{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600}
+.mat-yr1{background:#eaf3de;color:#2d5a1b}
+.mat-yr2{background:#e8f0fb;color:#1a3a7a}
+.mat-yr3{background:#fff3e0;color:#854F0B}
+.mat-yr4{background:#fce4d6;color:#7a2d00}
+.mat-yr5{background:#f3e0fa;color:#4a1a7a}
+.mat-yr8{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Click any cell to edit. Add or remove rows. Changes saved to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode active</span>
+  <button class="btn btn-save" onclick="saveData()">Save changes</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+  <button class="btn btn-add" onclick="addRow('silvo-crops-table',9)">+ Add crop</button>
+  <button class="btn btn-add" onclick="addRow('silvo-tools-table',5)">+ Add tool</button>
+</div>
+
+<div class="sec-hdr">
+  <span style="font-size:20px">&#127815;</span>
+  <h2>Silvopasture &middot; Orchard &middot; Trellis Crops</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">
+    <span class="bdg">$0 &rarr; $53,000+/yr (Year 1 &rarr; Year 8+)</span>
+    <span class="bdg">~14 acres &middot; sheep rotation integrated</span>
+    <span class="bdg">200&ndash;600 hrs/yr as system matures</span>
+  </div>
+</div>
+<div class="sb">
+  <div style="display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'silvo','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','maturity')">Maturity Timeline</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','calendar')">Pruning + Harvest</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','crops')">All Crops</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','sheep')">Sheep Integration</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','revenue')">Revenue Ramp</div>
+    <div class="sub-tab" onclick="subTab(this,'silvo','tools')">Tools</div>
+  </div>
+
+  <div id="silvo-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Total silvopasture acreage</div><div class="mc-v" style="color:#3d2b7a">~14 acres</div><div class="mc-s">Grows as pasture expands to 30 acres by Year 5</div></div>
+      <div class="mc"><div class="mc-l">Revenue at Year 8+ maturity</div><div class="mc-v" style="color:#3d2b7a">$53,000+</div><div class="mc-s">All trellis, orchard, and tree crops producing</div></div>
+      <div class="mc"><div class="mc-l">First meaningful revenue</div><div class="mc-v" style="color:#3d2b7a">Year 2&ndash;3</div><div class="mc-s">Blackberries + figs first &middot; hops Year 3 &middot; grapes Year 4&ndash;5</div></div>
+      <div class="mc"><div class="mc-l">Sheep integration</div><div class="mc-v" style="color:#3d2b7a">Full rotation</div><div class="mc-s">Graze lane middles &middot; excluded from young tree drip-lines Yr 1&ndash;2</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#3B6D11;color:#fff;padding:7px 10px;font-size:11px;font-weight:500">Trellis Crops (~4 ac)</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">
+          <strong>Thornless blackberry</strong> &mdash; 2 ac (Navaho, Apache, Triple Crown)<br>
+          <strong>Hops</strong> &mdash; 1 ac (Cascade, Centennial, Columbus, Nugget)<br>
+          <strong>Hardy kiwi</strong> &mdash; 0.5 ac (Issai self-fertile)<br>
+          <strong>Grapes &mdash; red</strong> &mdash; 0.5 ac (Norton, Chambourcin)<br>
+          First revenue: Year 2&ndash;3
+        </div>
+      </div>
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#534AB7;color:#fff;padding:7px 10px;font-size:11px;font-weight:500">Orchard / Tree Crops (~4 ac)</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">
+          <strong>Figs</strong> &mdash; 1 ac (Brown Turkey, Celeste)<br>
+          <strong>Grapes &mdash; white</strong> &mdash; 1 ac (Vidal Blanc, Chardonel)<br>
+          <strong>Persimmons</strong> &mdash; 0.5 ac (Fuyu Asian)<br>
+          <strong>Mulberry</strong> &mdash; 0.5 ac (Illinois Everbearing)<br>
+          <strong>Pawpaws</strong> &mdash; 1 ac (Shenandoah, Sunflower)<br>
+          First revenue: Yr 2&ndash;3 (figs) &middot; Yr 7+ (pawpaws)
+        </div>
+      </div>
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#5c3a10;color:#fff;padding:7px 10px;font-size:11px;font-weight:500">Support Trees + Chestnuts (~6 ac)</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">
+          <strong>Dunstan chestnuts</strong> &mdash; 1 ac<br>
+          <strong>Black locust</strong> &mdash; throughout (N-fixer, coppice posts)<br>
+          <strong>Honey locust</strong> &mdash; throughout (sheep pod fodder)<br>
+          <strong>Mulberry understory</strong> &mdash; scattered<br>
+          Chestnuts Year 6&ndash;8 &middot; Support trees: immediate soil benefit from Year 1
+        </div>
+      </div>
+    </div>
+    <div class="warn">Do not plan farm finances around silvopasture income before Year 3. Plant everything in Year 1 to maximize time in the ground &mdash; but budget as if silvopasture earns nothing until Year 3 (blackberries, figs) and nothing meaningful until Year 5 (hops at full yield, grapes building). The garden and livestock carry the farm while trees and vines establish. Silvopasture is the long-tail asset &mdash; it grows in value for 20&ndash;50 years with declining marginal labor.</div>
+    <div class="note" style="margin-top:8px"><strong>Immediate value from Year 1:</strong> Black locust fixes nitrogen across the whole pasture. Honey locust provides sheep pod fodder. Canopy reduces summer heat stress on pasture grasses, extending the grazing season. Sheep in lane middles replace 60+ hours of annual mowing labor at full scale. The trees are working from day one even while years away from food revenue.</div>
+  </div>
+
+  <div id="silvo-maturity" class="sub-panel">
+    <p class="sl">Realistic crop maturity &mdash; first harvest and full production &middot; Zone 7b &middot; Lancaster County, Virginia</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="silvo-mat-table">
+      <thead><tr><th style="min-width:160px">Crop</th><th>Acreage</th><th>Plant</th><th>First harvest</th><th>Full production</th><th>Productive life</th><th>Revenue (full)</th><th>Key notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit><strong>Thornless Blackberry (Navaho, Apache)</strong></td><td data-edit>2 ac</td><td data-edit>Year 1 bare root canes, spring</td><td data-edit><span class="mat mat-yr2">Year 2 (light)</span></td><td data-edit><span class="mat mat-yr2">Year 3+</span></td><td data-edit>15&ndash;20 yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$10,000/yr</td><td data-edit>Labor-intensive Aug harvest &middot; pick 3&times;/week at peak &middot; remove all 2nd-year floricanes after harvest &middot; tip primocanes Sep for lateral branching</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Hops (Cascade, Centennial, Columbus, Nugget)</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 rhizomes, spring (18-ft trellis must be installed first)</td><td data-edit><span class="mat mat-yr3">Year 2 (very light)</span></td><td data-edit><span class="mat mat-yr3">Year 3+</span></td><td data-edit>20+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$12,000/yr</td><td data-edit>18-ft trellis required before planting &middot; bines die to ground every winter &middot; new coir strings each spring &middot; harvest Aug when lupulin glands golden &middot; dry to 8&ndash;10% moisture &middot; sell direct to craft breweries</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Figs (Brown Turkey, Celeste)</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 container or bare root</td><td data-edit><span class="mat mat-yr2">Year 2&ndash;3</span></td><td data-edit><span class="mat mat-yr2">Year 3+</span></td><td data-edit>30+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$8,000/yr</td><td data-edit>Zone 7b reliable with heavy winter mulching at crown &middot; Brown Turkey most cold-hardy &middot; Celeste sweeter and more intensely flavored &middot; two crops/season (Breba + main) &middot; sell fresh and dried &middot; restaurant charcuterie use</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Hardy Kiwi (Issai self-fertile)</strong></td><td data-edit>0.5 ac</td><td data-edit>Year 1 bare root</td><td data-edit><span class="mat mat-yr3">Year 3</span></td><td data-edit><span class="mat mat-yr4">Year 4&ndash;5</span></td><td data-edit>30+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$3,000/yr</td><td data-edit>Issai is self-fertile &mdash; no separate male needed &middot; grape-sized fruit with edible skin &middot; genuine market novelty &middot; strong trellis required &middot; prune hard each winter or vine becomes unmanageable</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Grapes &mdash; Norton + Chambourcin (red)</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 dormant cuttings</td><td data-edit><span class="mat mat-yr3">Year 3 (light)</span></td><td data-edit><span class="mat mat-yr4">Year 4&ndash;5</span></td><td data-edit>25+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$6,000/yr</td><td data-edit>Norton is Virginia native grape &mdash; naturally disease resistant for this humid climate &middot; Chambourcin top red hybrid for VA &middot; sell to local wineries OR direct market as table grapes &middot; dormant prune Jan&ndash;Feb is non-negotiable</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Grapes &mdash; Vidal Blanc + Chardonel (white)</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 dormant cuttings</td><td data-edit><span class="mat mat-yr3">Year 3 (light)</span></td><td data-edit><span class="mat mat-yr4">Year 4&ndash;5</span></td><td data-edit>25+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$6,000/yr</td><td data-edit>Vidal Blanc for late-harvest wines and dry whites &middot; Chardonel cold-hardy Chardonnay hybrid &middot; establish winery relationship before first harvest &middot; same management calendar as red varieties</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Mulberry &mdash; Illinois Everbearing</strong></td><td data-edit>0.5 ac</td><td data-edit>Year 1 bare root</td><td data-edit><span class="mat mat-yr3">Year 3</span></td><td data-edit><span class="mat mat-yr3">Year 4+</span></td><td data-edit>40+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$2,500/yr</td><td data-edit>Thornless &middot; extremely productive Jun&ndash;Jul &middot; sheep eat windfall freely (useful for finishing lambs) &middot; sell at market and to restaurants &middot; very low management once established</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Persimmon &mdash; Fuyu Asian</strong></td><td data-edit>0.5 ac</td><td data-edit>Year 1 grafted transplant</td><td data-edit><span class="mat mat-yr4">Year 3&ndash;4</span></td><td data-edit><span class="mat mat-yr4">Year 5&ndash;6</span></td><td data-edit>40+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$2,500/yr</td><td data-edit>Non-astringent type &mdash; eaten crisp like an apple &middot; harvest Oct&ndash;Nov &middot; distinctive orange color creates strong market presence &middot; growing restaurant demand for fall menus</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Pawpaw (Shenandoah, Sunflower, PA Golden)</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 CONTAINER ONLY (bare root fails) &middot; transplant in partial shade</td><td data-edit><span class="mat mat-yr5">Year 5&ndash;6</span></td><td data-edit><span class="mat mat-yr5">Year 7&ndash;8</span></td><td data-edit>50+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$5,000/yr</td><td data-edit>Native &middot; zero pest pressure &middot; hand pollinate with small paintbrush Apr &middot; harvest Sep&ndash;Oct when fruit gives to gentle pressure &middot; short shelf life (1 week) &mdash; sell same day &middot; zero Virginia retail competition &middot; $5&ndash;8/lb</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Dunstan Chestnuts</strong></td><td data-edit>1 ac</td><td data-edit>Year 1 seedling transplant</td><td data-edit><span class="mat mat-yr5">Year 5</span></td><td data-edit><span class="mat mat-yr5">Year 7&ndash;8</span></td><td data-edit>60+ yrs</td><td data-edit style="color:#3B6D11;font-weight:500">$3,000/yr</td><td data-edit>Blight-resistant hybrid &middot; sheep-safe (unlike ornamental chestnut) &middot; harvest Sep&ndash;Nov when burs split &middot; store at 32&deg;F &middot; roasting market Oct&ndash;Nov &middot; restaurant fall menu demand growing</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Black Locust (support)</strong></td><td data-edit>Throughout</td><td data-edit>Year 1 seedling or direct seed</td><td data-edit><span class="mat mat-yr1">Biomass Yr 2+</span></td><td data-edit><span class="mat mat-yr1">Coppice Yr 3+</span></td><td data-edit>60+ yrs</td><td data-edit>Soil capital</td><td data-edit>N-fixer &middot; hardwood posts from coppice every 5&ndash;7 yrs &middot; sheep eat leaves without harm &middot; manage to prevent seed spread &middot; most important soil improvement tree in the system</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Honey Locust (support + fodder)</strong></td><td data-edit>Throughout</td><td data-edit>Year 1 THORNLESS cultivar seedling only</td><td data-edit><span class="mat mat-yr3">Pods Yr 4+</span></td><td data-edit><span class="mat mat-yr3">Pods Yr 5+</span></td><td data-edit>50+ yrs</td><td data-edit>Soil capital</td><td data-edit>THORNLESS cultivar essential &mdash; thorned original dangerous to sheep and equipment &middot; sheep eat pods eagerly in fall &middot; deep taproot improves soil water infiltration &middot; summer shade in pasture lanes</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="silvo-calendar" class="sub-panel">
+    <p class="sl">Annual pruning and harvest calendar &mdash; all silvopasture crops</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="silvo-cal-table">
+      <thead><tr><th style="min-width:200px">Crop / Activity</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th style="width:30px"></th></tr></thead>
+      <tbody id="silvoCalBody"></tbody>
+    </table>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;font-size:11px;flex-wrap:wrap">
+      <span><span style="background:#7F77DD;color:#fff;padding:1px 5px;border-radius:2px">P</span> Prune</span>
+      <span><span style="background:#3B6D11;color:#fff;padding:1px 5px;border-radius:2px">H</span> Harvest</span>
+      <span><span style="background:#e8b84d;color:#5a3800;padding:1px 5px;border-radius:2px">T</span> Train / tie</span>
+      <span><span style="background:#b8d98e;color:#1a4a00;padding:1px 5px;border-radius:2px">Plant</span> Establish</span>
+      <span><span style="background:#5c3a10;color:#fff;padding:1px 5px;border-radius:2px">S</span> Sheep in lanes</span>
+      <span><span style="background:#e0ddd6;padding:1px 5px;border-radius:2px">M</span> Maintenance</span>
+    </div>
+    <div class="warn" style="margin-top:10px"><strong>Pruning is not optional in Virginia humidity.</strong> Unpruned blackberries and grapes develop fungal disease that can collapse a planting in one season. Dormant pruning (January&ndash;February) is the most important annual task in the silvopasture system. Schedule it as a fixed commitment in the first week of February every year &mdash; before bud swell begins. Hops: bines die to ground every winter &mdash; cut to ground November, new coir strings April.</div>
+  </div>
+
+  <div id="silvo-crops" class="sub-panel">
+    <p class="sl">All silvopasture crops &mdash; full detail &middot; edit freely</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="silvo-crops-table">
+      <thead><tr><th>Crop / Variety</th><th>Type</th><th>Acreage</th><th>Establish from</th><th>Full prod.</th><th>Revenue</th><th>Price</th><th>Market channel</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Thornless Blackberry (Navaho, Apache, Triple Crown)</td><td data-edit>Trellis vine</td><td data-edit>2 ac</td><td data-edit>Bare root canes, spring</td><td data-edit>Year 3+</td><td data-edit>$10,000/yr</td><td data-edit>$5&ndash;8/lb</td><td data-edit>Farmers market + restaurants</td><td data-edit>Most labor-intensive crop in system &middot; pick every 2&ndash;3 days &middot; floricane management critical</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Hops (Cascade, Centennial, Columbus, Nugget)</td><td data-edit>Trellis vine</td><td data-edit>1 ac</td><td data-edit>Rhizomes, spring (18-ft trellis first)</td><td data-edit>Year 3+</td><td data-edit>$12,000/yr</td><td data-edit>$10&ndash;15/lb dry</td><td data-edit>Craft breweries direct</td><td data-edit>Highest per-acre revenue &middot; establish brewery relationships Year 2 before first harvest</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Figs (Brown Turkey, Celeste)</td><td data-edit>Tree</td><td data-edit>1 ac</td><td data-edit>Container transplant</td><td data-edit>Year 3+</td><td data-edit>$8,000/yr</td><td data-edit>$5&ndash;8/lb</td><td data-edit>Market + restaurants</td><td data-edit>Two crops/season Zone 7b (Breba + main) &middot; mulch crowns heavily Nov&ndash;Mar &middot; fresh and dried</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Grapes &mdash; Norton + Chambourcin</td><td data-edit>Trellis</td><td data-edit>1 ac</td><td data-edit>Dormant cuttings</td><td data-edit>Year 4&ndash;5</td><td data-edit>$6,000/yr</td><td data-edit>Winery or $3&ndash;5/lb</td><td data-edit>Local wineries + direct market</td><td data-edit>Norton is Virginia native &mdash; disease resistant for humid climate &middot; dormant prune Jan&ndash;Feb critical</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Grapes &mdash; Vidal Blanc + Chardonel</td><td data-edit>Trellis</td><td data-edit>1 ac</td><td data-edit>Dormant cuttings</td><td data-edit>Year 4&ndash;5</td><td data-edit>$6,000/yr</td><td data-edit>Winery or $3&ndash;5/lb</td><td data-edit>Local wineries + direct market</td><td data-edit>Vidal Blanc for late-harvest wines &middot; Chardonel cold-hardy Chardonnay hybrid</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Hardy Kiwi (Issai self-fertile)</td><td data-edit>Trellis vine</td><td data-edit>0.5 ac</td><td data-edit>Bare root</td><td data-edit>Year 4&ndash;5</td><td data-edit>$3,000/yr</td><td data-edit>$4&ndash;6/lb</td><td data-edit>Market novelty</td><td data-edit>Self-fertile &middot; grape-sized edible-skin fruit &middot; genuine novelty &middot; prune hard every winter</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Mulberry &mdash; Illinois Everbearing</td><td data-edit>Tree</td><td data-edit>0.5 ac</td><td data-edit>Bare root</td><td data-edit>Year 4+</td><td data-edit>$2,500/yr</td><td data-edit>$4&ndash;6/lb</td><td data-edit>Market + sheep fodder</td><td data-edit>Thornless &middot; Jun&ndash;Jul &middot; sheep eat windfall &middot; useful for finishing lambs at market weight</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Persimmon &mdash; Fuyu</td><td data-edit>Tree</td><td data-edit>0.5 ac</td><td data-edit>Grafted transplant</td><td data-edit>Year 5&ndash;6</td><td data-edit>$2,500/yr</td><td data-edit>$4&ndash;7/lb</td><td data-edit>Market + restaurants</td><td data-edit>Non-astringent &middot; eat crisp &middot; Oct&ndash;Nov harvest &middot; fall menu restaurant demand growing</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Pawpaw (Shenandoah, Sunflower, PA Golden)</td><td data-edit>Tree</td><td data-edit>1 ac</td><td data-edit>Container ONLY</td><td data-edit>Year 7&ndash;8</td><td data-edit>$5,000/yr</td><td data-edit>$5&ndash;8/lb</td><td data-edit>Market (sells out immediately)</td><td data-edit>Native &middot; zero pests &middot; hand pollinate Apr &middot; short shelf life &middot; zero Virginia retail competition</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Dunstan Chestnuts</td><td data-edit>Tree</td><td data-edit>1 ac</td><td data-edit>Seedling</td><td data-edit>Year 7&ndash;8</td><td data-edit>$3,000/yr</td><td data-edit>$3&ndash;5/lb</td><td data-edit>Market + restaurants</td><td data-edit>Blight-resistant &middot; sheep-safe &middot; roasting market Oct&ndash;Nov &middot; fall menu demand growing</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Black Locust (support)</td><td data-edit>Support tree</td><td data-edit>Throughout</td><td data-edit>Seedling or direct seed</td><td data-edit>Biomass Yr 2+</td><td data-edit>Soil capital</td><td data-edit>N/A</td><td data-edit>Farm use only</td><td data-edit>N-fixer &middot; coppice for hardwood posts every 5&ndash;7 yrs &middot; sheep eat leaves &middot; manage to prevent seed spread</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Honey Locust (support + fodder)</td><td data-edit>Support tree</td><td data-edit>Throughout</td><td data-edit>THORNLESS cultivar seedling only</td><td data-edit>Pods Yr 4+</td><td data-edit>Soil capital</td><td data-edit>N/A</td><td data-edit>Sheep fodder + soil improvement</td><td data-edit>THORNLESS ONLY &mdash; thorned original dangerous &middot; sheep eat pods &middot; deep taproot improves water infiltration</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="silvo-sheep" class="sub-panel">
+    <p class="sl">How sheep and silvopasture work together</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#5c3a10;color:#e8d4b8;padding:7px 10px;font-size:11px;font-weight:500">Tree row spacing &mdash; designed for sheep</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">Trees planted 20&ndash;25 ft apart in rows with 30&ndash;40 ft lane width &mdash; wide enough for sheep to graze comfortably underneath. ATV can pass between rows for harvest. Sheep suppress grass and weeds without mowing. Their manure fertilizes trees at zero cost year-round. At 14 acres, this replaces 60&ndash;80 hours of annual mowing labor.</div>
+      </div>
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#3d2b7a;color:#d0c8f5;padding:7px 10px;font-size:11px;font-weight:500">Young tree protection &mdash; Years 1&ndash;2</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">Sheep excluded from drip-line of all new plantings for first 2 years using electronet fence rings around young trees. Spiral plastic bark guards on every trunk Years 1&ndash;3. After Year 2, trees tall enough that sheep cannot damage canopy. Rings removed; sheep have permanent lane access thereafter.</div>
+      </div>
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#854F0B;color:#fff;padding:7px 10px;font-size:11px;font-weight:500">What sheep must NOT access</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7"><strong>Hops bines:</strong> Sheep eat them &mdash; keep out of hop yard entirely.<br><strong>Grape clusters:</strong> Exclude Aug&ndash;Oct during ripening.<br><strong>Young blackberry primocanes:</strong> Exclude May&ndash;Sep during active cane growth.<br><strong>Windfall fruit (figs, persimmons):</strong> Fine for sheep &mdash; cleans up fruit that would harbor disease.</div>
+      </div>
+      <div style="border:.5px solid var(--border);border-radius:6px;overflow:hidden">
+        <div style="background:#3B6D11;color:#fff;padding:7px 10px;font-size:11px;font-weight:500">Why silvopasture outperforms pasture alone</div>
+        <div style="padding:10px;font-size:11px;color:#555;line-height:1.7">Summer forage quality maintained under canopy (shade reduces soil temp 5&ndash;8&deg;F; grass stays active 3&ndash;4 weeks longer). Annual forage production +20&ndash;40% from N-fixing trees. Leaf litter adds 1&ndash;3 tons organic matter per acre annually. Carbon sequestration 2&ndash;5 tons CO&#8322;/acre/year. Annual mowing labor drops from 60&ndash;80 hrs to near zero once sheep are integrated.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="silvo-revenue" class="sub-panel">
+    <p class="sl">Revenue ramp &mdash; year by year as crops mature</p>
+    <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:12px" id="revCards"></div>
+    <div style="position:relative;height:280px;margin-bottom:10px"><canvas id="silvoRevChart"></canvas></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#666;margin-bottom:12px">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#3B6D11;display:inline-block"></span>Blackberries</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#534AB7;display:inline-block"></span>Hops</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#854F0B;display:inline-block"></span>Figs</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#7F77DD;display:inline-block"></span>Grapes</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c47f17;display:inline-block"></span>Kiwi + Persimmon + Mulberry</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#27500A;display:inline-block"></span>Pawpaw + Chestnut</span>
+    </div>
+    <div class="note">Market channels: Blackberries ($5&ndash;8/lb) at farmers markets and restaurants. Hops ($10&ndash;15/lb dry) direct to craft breweries &mdash; establish relationships before Year 3 harvest. Grapes to Ingleside Plantation Vineyards, Vault Field Vineyards, or direct market. Figs ($5&ndash;8/lb) at market and restaurant charcuterie. Pawpaws ($5&ndash;8/lb) have essentially zero Virginia retail competition &mdash; they sell out immediately when available.</div>
+  </div>
+
+  <div id="silvo-tools" class="sub-panel">
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="silvo-tools-table">
+      <thead><tr><th>Tool</th><th>Cost</th><th>Priority</th><th>Use</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Long-arm pruner + pole saw</td><td data-edit>~$80&ndash;200</td><td data-edit>HIGH</td><td data-edit>Tree canopy + hop yard management</td><td data-edit>Felco telescoping extends to 9 ft without a ladder. Essential once trees exceed arm height. Jan&ndash;Feb dormant pruning season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>High-tensile trellis wire + post driver</td><td data-edit>~$2,000&ndash;4,000/ac &middot; $6,000 hop yard</td><td data-edit>HIGH</td><td data-edit>Blackberries, grapes, hops, kiwi &mdash; all trellised crops</td><td data-edit>12.5-gauge wire on 8-ft treated posts every 20 ft for blackberries and grapes. 18-ft posts for hops. Install before planting &mdash; this is the biggest infrastructure investment.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Biodegradable coir string (hops)</td><td data-edit>~$100/ac/year</td><td data-edit>HIGH</td><td data-edit>New string each season as hop bines die back</td><td data-edit>Coir degrades in soil &mdash; no cleanup. Must be installed before bines begin growing in April. Clips attach string to top wire.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Hop harvesting + drying setup</td><td data-edit>~$400&ndash;600 separator &middot; ~$150 vacuum sealer</td><td data-edit>HIGH</td><td data-edit>August harvest and processing for brewery sales</td><td data-edit>Hand-cranked hop separator removes cones from bines. Dry to 8&ndash;10% moisture. Vacuum seal in 1-lb food-safe bags with CO&#8322; flush. Required for commercial hop sales to any serious brewery buyer.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Tree guards + spiral bark protectors</td><td data-edit>~$1&ndash;3 each &middot; budget 200+</td><td data-edit>HIGH</td><td data-edit>Every young tree Years 1&ndash;3</td><td data-edit>Prevents rabbit girdling in winter and sheep rubbing bark damage. Skip one tree and it can be dead by spring from rabbit damage below the snow line.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Drip irrigation (trees + vines)</td><td data-edit>~$300&ndash;600/ac installed</td><td data-edit>HIGH</td><td data-edit>Establishment watering Years 1&ndash;3</td><td data-edit>2-gal/hr emitters per tree on timer. Drip tape for berry rows. Critical in first 3 summers &mdash; trees that dry out in Year 1 rarely fully recover. Worth every penny of infrastructure cost.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Grafting knife + budding tape</td><td data-edit>~$30&ndash;50</td><td data-edit>MED</td><td data-edit>Propagating pawpaw named cultivars</td><td data-edit>Seedling pawpaws have highly variable fruit quality; named cultivar grafts are essential. Grape cuttings root without grafting. Learn dormant wood grafting before Year 3.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Orchard spray + harvest log (paper binder)</td><td data-edit>~$0</td><td data-edit>MED</td><td data-edit>Required for GAP certification if selling to restaurants with food safety requirements</td><td data-edit>Log all inputs (including compost tea applications), harvest dates, and cultural practices. Consistent documentation is what makes a farm eligible for restaurant contracts that require food safety documentation.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Mower (for lane middles &mdash; pre-sheep)</td><td data-edit>Shared with farm mower</td><td data-edit>MED</td><td data-edit>Before sheep access the lanes (Years 1&ndash;2)</td><td data-edit>Keep grass in lane middles at 4&ndash;6 inches to encourage dense pasture sward. Once sheep are integrated into lanes, mowing drops to near zero &mdash; sheep replace the mower completely.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+
+
+// Silvopasture pruning/harvest calendar
+const silvoCalData = [
+  ['Blackberry &mdash; dormant prune',    ['P','P','','','','','','','','','','P']],
+  ['Blackberry &mdash; tip primocanes',   ['','','','','','','','','M','','','']],
+  ['Blackberry &mdash; remove floricanes',['','','','','','','','M','','','','']],
+  ['Blackberry &mdash; harvest',          ['','','','','','H','H','H','','','','']],
+  ['Hops &mdash; cut bines to ground',   ['M','','','','','','','','','','P','P']],
+  ['Hops &mdash; string new coir lines', ['','','','M','','','','','','','','']],
+  ['Hops &mdash; train bines upward',    ['','','','','T','T','','','','','','']],
+  ['Hops &mdash; harvest + dry',         ['','','','','','','','H','M','','','']],
+  ['Grapes &mdash; dormant pruning',     ['P','P','','','','','','','','','','P']],
+  ['Grapes &mdash; shoot thin + hedge',  ['','','','','T','T','T','','','','','']],
+  ['Grapes &mdash; harvest',             ['','','','','','','','','H','H','','']],
+  ['Figs &mdash; light prune (dead wood)',['P','P','','','','','','','','','','']],
+  ['Figs &mdash; harvest (2 crops)',     ['','','','','','H','','H','','','','']],
+  ['Figs &mdash; mulch crowns',          ['','','','','','','','','','','M','M']],
+  ['Pawpaw &mdash; hand pollinate',      ['','','','M','','','','','','','','']],
+  ['Pawpaw + Persimmon &mdash; harvest', ['','','','','','','','','H','H','','']],
+  ['Chestnuts &mdash; harvest',          ['','','','','','','','','H','H','','']],
+  ['Tree guards &mdash; check + replace',['','','M','','','','','','','','M','']],
+  ['New plantings (Year 1 only)',        ['','','P','P','','','','','','','','']],
+  ['Sheep in silvopasture lanes',        ['S','S','S','S','S','S','S','S','S','S','S','S']],
+  ['Cover crop &mdash; lane middles',    ['M','M','','','','','M','M','M','P','M','M']],
+];
+
+const calColorMap = {
+  'P':'#7F77DD','H':'#3B6D11','T':'#e8b84d','M':'#e0ddd6','S':'#5c3a10',
+};
+const calTextColor = {
+  'P':'#fff','H':'#fff','T':'#5a3800','M':'#888','S':'#fff',
+};
+
+const silvoCalBody = document.getElementById('silvoCalBody');
+silvoCalData.forEach(([name, months]) => {
+  const cells = months.map(m => {
+    if (!m) return '<td></td>';
+    let bg = calColorMap[m] || '#e0ddd6';
+    let fc = calTextColor[m] || '#888';
+    // Special case for Plant
+    if (m === 'P' && name.includes('planting')) { bg='#b8d98e'; fc='#1a4a00'; }
+    return `<td><span class="cal-cell" style="background:${bg};color:${fc}">${m}</span></td>`;
+  }).join('');
+  silvoCalBody.innerHTML += `<tr><td data-edit style="font-size:11px;font-weight:500;white-space:nowrap;max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</td>${cells}<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>`;
+});
+
+// Revenue data
+const revRows = [
+  {yr:'Yr 1', bb:0,    hops:0,    figs:0,    gr:0,    kpm:0,   pc:0},
+  {yr:'Yr 2', bb:2000, hops:0,    figs:1500, gr:0,    kpm:0,   pc:0},
+  {yr:'Yr 3', bb:8000, hops:3000, figs:5000, gr:500,  kpm:0,   pc:0},
+  {yr:'Yr 4', bb:10000,hops:8000, figs:7000, gr:3000, kpm:1500,pc:0},
+  {yr:'Yr 5', bb:10000,hops:12000,figs:8000, gr:7000, kpm:3500,pc:0},
+  {yr:'Yr 6', bb:10000,hops:12000,figs:8000, gr:10000,kpm:5000,pc:500},
+  {yr:'Yr 7', bb:10000,hops:12000,figs:8000, gr:12000,kpm:5500,pc:2000},
+  {yr:'Yr 8+',bb:10000,hops:12000,figs:8000, gr:12000,kpm:5500,pc:8000},
+];
+
+// Revenue cards
+const cards = document.getElementById('revCards');
+revRows.forEach(r => {
+  const t = r.bb+r.hops+r.figs+r.gr+r.kpm+r.pc;
+  const bg = t >= 30000 ? '#f0f5ea' : t >= 5000 ? '#f5f3ee' : '#fafaf7';
+  const vc = t >= 30000 ? '#2d5a1b' : t >= 5000 ? '#854F0B' : '#888';
+  cards.innerHTML += `<div style="background:${bg};border-radius:6px;padding:8px;text-align:center"><div style="font-size:10px;color:#888">${r.yr}</div><div style="font-size:13px;font-weight:500;color:${vc}">${t ? '$'+t.toLocaleString() : '$0'}</div></div>`;
+});
+
+new Chart(document.getElementById('silvoRevChart'), {
+  type: 'bar',
+  data: {
+    labels: revRows.map(r => r.yr),
+    datasets: [
+      {label:'Blackberries',         data:revRows.map(r=>r.bb),   backgroundColor:'#3B6D11', borderRadius:2, borderSkipped:false},
+      {label:'Hops',                 data:revRows.map(r=>r.hops), backgroundColor:'#534AB7', borderRadius:2, borderSkipped:false},
+      {label:'Figs',                 data:revRows.map(r=>r.figs), backgroundColor:'#854F0B', borderRadius:2, borderSkipped:false},
+      {label:'Grapes',               data:revRows.map(r=>r.gr),   backgroundColor:'#7F77DD', borderRadius:2, borderSkipped:false},
+      {label:'Kiwi+Persimmon+Mulb',  data:revRows.map(r=>r.kpm), backgroundColor:'#c47f17', borderRadius:2, borderSkipped:false},
+      {label:'Pawpaw+Chestnut',      data:revRows.map(r=>r.pc),   backgroundColor:'#27500A', borderRadius:2, borderSkipped:false},
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend:{display:false}, tooltip:{callbacks:{footer:items=>'Total: $'+items.reduce((s,i)=>s+i.raw,0).toLocaleString()}}},
+    scales: {
+      x: {stacked:true, grid:{display:false}, ticks:{color:'#888',font:{size:11}}, border:{display:false}},
+      y: {stacked:true, grid:{color:'rgba(0,0,0,0.05)'}, border:{display:false}, ticks:{color:'#888', callback:v=>'$'+v.toLocaleString()}}
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Timeline &amp; To-Do</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#1a2e14;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+.task-month{background:var(--gm);color:#fff;font-weight:600;padding:6px 12px;font-size:12px;margin-top:2px}
+.task-row{display:grid;grid-template-columns:140px 80px 80px 1fr;gap:0;border-bottom:.5px solid #f0ede6;font-size:12px}
+.task-row:hover{background:#fafaf7}
+.task-row div{padding:6px 8px;vertical-align:middle}
+.task-hdr{display:grid;grid-template-columns:140px 80px 80px 1fr;gap:0;background:#f8f7f4;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border)}
+.task-hdr div{padding:5px 8px}
+.pri-high{color:#c0392b;font-weight:600;font-size:10px}
+.pri-med{color:#c47f17;font-weight:600;font-size:10px}
+.pri-low{color:#3B6D11;font-weight:600;font-size:10px}
+.cat-tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600}
+.cat-P{background:#eaf3de;color:#2d5a1b}
+.cat-A{background:#fff3e0;color:#854F0B}
+.cat-L{background:#fde8f0;color:#7a1a4a}
+.cat-S{background:#f0eefa;color:#3d2b7a}
+.cat-I{background:#e8f0fb;color:#1a3a7a}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+
+<!-- EDIT CONTROLS -->
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Edit any cell directly. Add or remove tasks. Save to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode</span>
+  <button class="btn btn-save" onclick="saveData()">Save changes</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+  <button class="btn btn-add" onclick="addRow('todo-table',5)">+ Add task</button>
+  <span style="font-size:11px;color:var(--muted)">Click any cell to edit &middot; &#10005; button removes row</span>
+</div>
+
+<div style="background:#1a2e14;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px;margin-bottom:0">
+  <span style="font-size:20px">&#128203;</span>
+  <h2 style="color:#fff;margin:0;font-size:15px;flex:1">Timeline &amp; To-Do List &mdash; Edgehill Farm</h2>
+  <span class="bdg">Starting September</span>
+  <span class="bdg">Through Year 3+ maturity</span>
+</div>
+<div style="border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px;overflow:hidden">
+  <div class="task-hdr"><div>Month / Period</div><div>Category</div><div>Priority</div><div>Task</div></div>
+  <table class="tbl" style="border:.5px solid" data-table="todo-table"><tbody>
+    <!-- SEPTEMBER (START) -->
+    <tr class="group"><td colspan="5">SEPTEMBER (START) &mdash; Site preparation and ordering season</td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Walk the full 2-acre starting perennial site. Flag positions for all P1&ndash;P4 plots. Mark paths, drainage low spots, and wet margin for sea beans + watercress.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Order all bare-root perennial stock for fall planting: asparagus crowns (265 Jersey Knight + Jersey Supreme), strawberry crowns (430 Earliglow + Chandler + Seascape), elderberry bare-root, currants, gooseberry, aronia, goji. Order NOW — fall stock sells out.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Order perennial herb divisions for fall planting: sorrel crowns, lovage crowns, French tarragon divisions (vegetative only — no seed), chive divisions, comfrey Bocking 14 crowns (minimum 30 plants). Order from reputable division sources, not seed.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Order lavender transplants: Phenomenal or Grosso varieties ONLY. Other lavender varieties fail in Zone 7b humidity. Need 22 plants for P2 raised section.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Order walking onion sets for fall planting (Sep–Oct preferred). Order rhubarb crowns (Victoria + Crimson Red).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Order 8 ewes + 2 rams (Katahdin, registered). Contact KHSI registry for Virginia breeder list. Budget $175&ndash;250/ewe, $400&ndash;500/ram. Schedule delivery for when pasture paddocks are fenced.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Order 2 Alumi-Coop 12&times;10 ft structures if not already purchased. $3,754 each + 5.3% VA tax + $100 delivery = $4,053 each. Note: May qualify for VA farm equipment sales tax exemption under Code 58.1-609.2.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Install 2-acre perimeter fence for sheep paddock system. Run Premier 1 ElectroNet (164-ft rolls) for daily rotational paddock moves. Plan 58 paddocks of 1,500 sq ft each (30&times;50 ft).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-low">LOW</span></td><td data-edit>Source seed garlic for October planting: Music and German Extra Hardy varieties. Need 800 cloves for A6 plot (8 rows). Order from reputable seed garlic supplier — retail garlic is often treated and will not sprout.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- OCTOBER -->
+    <tr class="group"><td colspan="5">OCTOBER &mdash; First plantings and livestock arrival</td></tr>
+    <tr><td data-edit>October 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant hardneck garlic (Music + German Extra Hardy). Plant largest cloves 4&ndash;6 in. deep, 6 in. apart in rows. Mulch immediately with 4 in. straw. This is the only October planting task for the annual plots. Garlic scapes will be a premium product next May.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October 1&ndash;15</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant walking onion sets throughout P4 designated rows. September&ndash;October is the preferred planting window. Sets establish well before winter and begin self-perpetuating immediately. Zero management after Year 1.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant all bare-root berry shrubs as they arrive: elderberry (lowest wettest section of P3), aronia, currants (red, black, white), gooseberry (thornless Hinnomaki Red + Poorman), goji berry. Plant immediately on arrival — do not let roots dry out. Mulch crowns 3&ndash;4 in.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant asparagus crowns (265 Jersey Knight + Jersey Supreme). Dig trenches 6&ndash;8 in. deep, 18-in. spacing in rows. Spread roots over small mound of soil at bottom of trench. Cover with 2 in. soil. Do NOT harvest Year 1 or Year 2 — root system must build first. Permanent 30&ndash;50 year planting.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant strawberry crowns (430 plants: Earliglow + Chandler June-bearing + Seascape everbearing). Fall planting establishes stronger root systems than spring. Plant crowns level with soil surface — too deep rots crown, too shallow desiccates it. Sunniest section of P3.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant all perennial herb divisions: sorrel crowns (24 in P2), lovage crowns (6&ndash;8 in P2), French tarragon divisions (8 in P1, best-drained section), chive clumps (throughout P1), comfrey Bocking 14 (1 plant near every asparagus row + throughout herb beds).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant rosemary transplants (Arp or Tuscan Blue, 10 plants in P1 best-drained position). Plant thyme divisions — common and lemon thyme (~35 plants in P1). Plant oregano + sage divisions. Plant mint divisions in buried pots (rim-level) in P1. All perennial herbs should be in the ground before first frost (Nov 10 avg).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Plant rhubarb crowns (14 crowns Victoria + Crimson Red) in P4. 3&ndash;4 ft spacing. Harvest stalks only in Year 3+ — LEAVES ARE TOXIC. Harvest lightly in Years 1&ndash;2 to build root system.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Receive Katahdin ewes and rams. Introduce to paddock system. Begin daily rotational moves: 8 sheep per 1,500 sq ft (30&times;50 ft) paddock per day. Move each morning. Sheep will naturally acclimate to the electronet fence within 2&ndash;3 days.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>Oct 15</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Seed all annual and flower plots with winter cover crop: Winter Rye (60 lbs/acre) + Crimson Clover (15 lbs/acre). Direct seed immediately after clearing any existing vegetation. Rye will germinate in 7&ndash;10 days and provide full winter cover by November.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- NOVEMBER -->
+    <tr class="group"><td colspan="5">NOVEMBER &mdash; Winterizing and planning</td></tr>
+    <tr><td data-edit>November</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Mulch all newly planted perennial beds: 3&ndash;4 in. straw or wood chip mulch over all herb beds, berry shrubs, and asparagus rows. Mound 6&ndash;8 in. of straw over fig and lemongrass crowns specifically — Zone 7b marginal for both. Do NOT mulch lavender crowns — they rot under wet mulch.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>November</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Begin breeding season. Introduce rams Oct 1&ndash;Nov 15. Apply livestock marking crayon to ram chest harness. Check marked ewes daily to confirm breeding. Change crayon color at 17 days to identify 2nd-cycle ewes. Remove rams Nov 15. Calculate lambing dates: Oct 1 breeding = March 27 lambing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>November</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Install permanent drip irrigation in all perennial plots (P1&ndash;P4). This is a one-time permanent installation. Soaker hose for herb rows; emitter drip at 2 gal/hr for berry shrubs and asparagus. Set automatic timer for 6 AM watering. Critical for establishment in first dry season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>November</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Plan silvopasture tree row layout across available acres. Mark 30&ndash;40 ft lane spacing for sheep access between tree rows. Order bare-root trees for spring planting: blackberry canes (Navaho + Apache), hop rhizomes (Cascade + Centennial), fig transplants (Brown Turkey + Celeste). Order early — spring stock depletes fast.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>November</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-low">LOW</span></td><td data-edit>Order seeds for Year 1 annual garden: salad mix varieties (Mesclun blend), spinach (Tyee + Bloomsdale), snap peas (Super Sugar Snap), broccoli (Belstar + Arcadia), all lettuce varieties. Order January for best availability. Check seed company stock now — plan substitutions for anything out of stock.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- DECEMBER-JANUARY -->
+    <tr class="group"><td colspan="5">DECEMBER &mdash; JANUARY &mdash; Planning, ordering, equipment</td></tr>
+    <tr><td data-edit>December</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Start Lisianthus (Echo series) indoors for Flower Plot F1. Lisianthus requires 150 days to bloom — start Dec&ndash;Jan for Aug&ndash;Oct harvest. Very slow germinator; needs 75&deg;F soil temperature. Start 20% more than needed to account for attrition.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>December&ndash;January</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Finalize all seed orders for Year 1 annual garden. Verify all varieties, quantities, and sources. Complete equipment checklist: Jang JP-1 seeder, wheel hoe + stirrup blade, flame weeder, paper pot transplanter, market scale (NTEP-certified), harvest bins, walk-in cooler or CoolBot chest freezer mod.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>January (Year 1)</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Order first batch of 30 Brahma sexed pullet chicks from hatchery (Cackle, Meyer, or Ideal Poultry — all ship to Virginia). Schedule delivery for late January or early February. Set up brooder: heat lamp, thermometer, chick feeders and waterers. Chick starter feed (18% protein), 3 bags for 30 chicks.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>January (Year 1)</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Apply for farmers market vendor spots: Kilmarnock market (largest, most established), White Stone, Irvington. Contact market managers now for spring season opening — many markets have waiting lists. Prepare farm photos and product list for applications.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- FEBRUARY YEAR 1 -->
+    <tr class="group"><td colspan="5">FEBRUARY (YEAR 1) &mdash; First harvests begin</td></tr>
+    <tr><td data-edit>February 1</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>START INDOORS: Broccoli (Belstar for spring), all lettuce varieties, onions for transplanting. Use heat mat at 70&deg;F. Transplant to cold frame or outdoors when 6 in. tall (approx. March 15). This is the critical indoor start timing for spring brassicas.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>February</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>FIRST HARVEST: Sorrel should be showing in February — the first fresh product of the year. Check all perennial beds. Harvest rosemary, thyme, bay laurel for dried herb sales. This is market revenue before any annual crops are planted. Bring to Kilmarnock market.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>February 15</td><td data-edit><span class="cat-tag cat-I">Infra</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Begin installing hop yard trellis if acreage is ready: 18-ft posts every 20 ft, high-tensile 12.5-gauge wire top and bottom. This must be in place before hop rhizomes are planted in spring. Budget $4,000&ndash;6,000 per acre for materials.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- MARCH YEAR 1 -->
+    <tr class="group"><td colspan="5">MARCH (YEAR 1) &mdash; Annual garden begins, perennial harvests expand</td></tr>
+    <tr><td data-edit>March 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Direct seed: Spinach (Tyee, Bloomsdale, Space) in A8. Sugar snap peas in A8 (direct seed, inoculate with rhizobium, install 4&ndash;5 ft trellis). Salad mix mesclun in A5 (broadcast, succession every 2&ndash;3 weeks). Arugula in A5. All as soon as soil is workable (soil temp 40&deg;F+).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>March 1</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>First cilantro seeding in P1 (spring window). Direct seed Mar 1 — spring window closes by May heat. Second seeding Aug 15 for fall window. Never sow in summer. This is the only annual crop in the perennial plots that truly becomes a self-seeding permanent fixture.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>March 15</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Transplant: Broccoli (Belstar spring), lettuce (Buttercrunch, Tom Thumb, Little Gem). Begin succession planting every 3 weeks for continuous lettuce supply. Paper pot transplanter dramatically reduces labor at this scale.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>March</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Begin dividing and expanding all established herb crowns: chives, sorrel (divide and expand), lemon balm, bee balm, yarrow. These all divide readily in spring. This is the primary means of expanding perennial herb coverage each year at zero cost.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- APRIL YEAR 1 -->
+    <tr class="group"><td colspan="5">APRIL (YEAR 1) &mdash; Asparagus check, major planting push</td></tr>
+    <tr><td data-edit>April 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Direct seed: Carrots (Nantes, Chantenay) in A6 — flame weed bed 10 days after seeding, before carrots emerge. Beets (Chioggia, Touchstone Gold, Detroit) in A6. Kohlrabi in A7. Radishes in A6. Carrots are the slowest germinators (14&ndash;21 days) — do NOT miss this window or succession will be disrupted.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>April (check)</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>ASPARAGUS CHECK: Do NOT harvest Year 1. Let all spears grow into ferns — this builds the root crown for next decade of production. Year 2: light harvest only (1&ndash;2 weeks). Year 3: start building toward full 6&ndash;8 week harvest. Patience here determines the next 30 years of asparagus yield.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>April 15&ndash;May 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Transplant Globe Artichoke (Emerald variety only — started indoors Jan 15). Hilltop position only — artichokes require excellent drainage, will rot in wet feet. Mulch 12+ in. for winter protection with inverted bushel basket cover. Full production Year 2+, 6&ndash;12 buds per plant annually.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>April</td><td data-edit><span class="cat-tag cat-S">Silvo</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant blackberry canes (Navaho + Apache): bare root, spring. Plant at 4 ft in-row spacing with 8&ndash;10 ft row spacing. Install trellis wire before planting. Install tree guards on all young canes. Exclude sheep from planting area using electronet rings until established (Year 2+).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>April</td><td data-edit><span class="cat-tag cat-S">Silvo</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant hop rhizomes (Cascade, Centennial, Columbus, Nugget): 18-in. depth, 3 ft in-row spacing, 7 ft between rows. Install biodegradable coir strings from ground to top wire now — bines begin growing immediately and need training guides within days of emergence. Train 2&ndash;3 bines per string, prune the rest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- MAY YEAR 1 -->
+    <tr class="group"><td colspan="5">MAY (YEAR 1) &mdash; First major harvest season + warm-season planting</td></tr>
+    <tr><td data-edit>May 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>TRANSPLANT: All tomatoes (A1) after last frost. Cherry tomatoes (Sun Gold, Juliet, Black Cherry): 10 rows, stake or cage all plants. Heirloom slicers (Cherokee Purple, Brandywine): 8 rows, 6-ft stake or Florida weave. All tomatoes started indoors March 1 (8 weeks before transplant).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>May 1</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>TRANSPLANT: All peppers (A3) after last frost — shishito, Jimmy Nardello, bell, hot. Direct seed: Cucumbers (A2), summer squash (A2), green beans (A8 — succession every 3 weeks). All warm-season crops after frost risk has passed (Mar 25 Zone 7b).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>May 1&ndash;15</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant turmeric and ginger rhizomes in P4 after soil reaches 65&deg;F (use thermometer). ~240 rhizomes each. Plant 4&ndash;6 in. deep, 12&ndash;18 in. spacing. Mulch heavily with 6+ in. straw. This is the most temperature-sensitive planting on the farm — cold soil causes rhizome rot. Do not rush.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>Late May</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>ELDERFLOWER HARVEST: 2&ndash;3 week window only (late May&ndash;early June). Harvest flower clusters when fully open but before petals drop. Make cordial immediately ($10&ndash;15/bottle) or dry for herbal tea market. This window does not repeat — missing it means waiting another full year.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- JUNE-JULY -->
+    <tr class="group"><td colspan="5">JUNE &mdash; JULY (YEAR 1) &mdash; Peak summer harvest</td></tr>
+    <tr><td data-edit>June</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>STRAWBERRY HARVEST: Peak production. Pick every 2&ndash;3 days. Sell same-day at market — strawberries do not hold. June-bearing flush is 2&ndash;3 week concentrated window; everbearing continues smaller waves through season. Renovate beds in July after harvest — remove old plants, replant runners.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>June&ndash;July</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Begin FAMACHA scoring for barber pole worm monitoring. Score each sheep's lower eyelid monthly (May&ndash;September). Treat only individuals scoring 3&ndash;5 — targeted selective treatment, never blanket drenching. Free FAMACHA certification available through Virginia Cooperative Extension.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>July</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>LAVENDER HARVEST: Harvest Phenomenal/Grosso before 50% of flowers open — maximum oil content. Cut stems to 1/3 of green growth (never into woody stems). Hang dry in bundles of 25&ndash;30 stems in covered shade with airflow. Dried lavender is highest per-pound dried herb value on the farm.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>July 15</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Start fall broccoli (Arcadia) indoors for Jul 15 transplant &rarr; Sep&ndash;Nov harvest. Also start fall kale (Lacinato) for Aug 15 transplant. Fall brassicas are often better quality than spring in Zone 7b. Arcadia is cold-hardy — harvest into November.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- AUGUST -->
+    <tr class="group"><td colspan="5">AUGUST (YEAR 1) &mdash; Root crops, fall prep, herd management</td></tr>
+    <tr><td data-edit>August</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>ELDERBERRY BERRY HARVEST: Aug&ndash;Sep. Cook or dry before sale — not eaten raw. Dried elderberries: $20&ndash;30/lb. Elderberry syrup: $15&ndash;20/bottle. This is one of the highest-margin perennial products. Process immediately after harvest — berries do not hold long.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>August 15</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Second cilantro seeding (P1, fall window). Direct seed salad mix for fall succession (A5). Direct seed spinach for fall (A8 — overwinters in Zone 7b under row cover). Transplant fall kale (A4). These fall plantings are as important as spring — they carry market revenue through November.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>August</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>RAM LAMB HARVEST: Sell ram lambs at 5&ndash;6 months (~90 lbs live weight). Schedule USDA mobile processing unit 4&ndash;6 weeks in advance ($85/lamb). 43 lbs dressed weight &times; $10/lb = $430 gross, $345 net per lamb. Sell directly to restaurants and at farmers market.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- SEPTEMBER+ -->
+    <tr class="group"><td colspan="5">SEPTEMBER &mdash; OCTOBER (YEAR 1) &mdash; Root harvest, fall planting cycle</td></tr>
+    <tr><td data-edit>September</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>TURMERIC + GINGER HARVEST: Harvest when foliage yellows (Sep&ndash;Nov). Use digging fork — do not use a spade (cuts rhizomes). Cure turmeric 2 weeks at room temperature before selling. Replant 20&ndash;30% of each harvest as next year's starts. Fresh turmeric: $8&ndash;15/lb. Fresh ginger: $6&ndash;12/lb.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-A">Annual</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Plant garlic again (Year 2 crop). Same beds as Year 1 (A6) after rotating cover crop. This is the only annual task in October for the garden — garlic is planted every October, harvested every June, as a permanent rhythm.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>HORSERADISH HARVEST: Main harvest Oct&ndash;Nov. Roots go 18&ndash;24 in. deep — use digging fork, not spade. Display a grater at market alongside whole roots ($4&ndash;8 each). Virginia oysters + fresh horseradish is a classic Northern Neck pairing. Fresh-grated is incomparable to jarred.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>October&ndash;November</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>PREGNANCY CONFIRMATION: Schedule farm vet for ultrasound pregnancy scanning ($5&ndash;8/ewe). Identify how many fetuses per ewe — triplet ewes need more feed supplementation in late gestation. Begin grain supplement (0.5 lb/ewe/day) for last 6 weeks of gestation. Calculate lambing dates.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>November&ndash;December</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>BRED EWE LAMB SALES: Sell confirmed-pregnant ewe lambs November&ndash;December at $450 each. Buyers know exact lambing date. This is the highest-value livestock product on the farm. Contact Katahdin breeder networks and KHSI registry to find buyers. Register flock with KHSI by Year 3 to push prices to $550&ndash;700.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <!-- ONGOING -->
+    <tr class="group"><td colspan="5">ONGOING WEEKLY TASKS (Year-round)</td></tr>
+    <tr><td data-edit>Every morning</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Move sheep to next paddock (30&times;50 ft per day for 8 sheep). Roll ElectroNet netting to new position. Check water. This takes 15&ndash;20 minutes once you have the system dialed in. Do not skip days — overgrazing paddocks breaks the rotation system.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>Every morning</td><td data-edit><span class="cat-tag cat-L">Livestock</span></td><td data-edit><span class="pri-high">HIGH</span></td><td data-edit>Move chicken coop to next paddock (one paddock behind sheep — Day 2 after sheep move). Check auto-door operation. Replenish fermented feed. Collect any eggs not caught by auto-catchment system. This takes 10&ndash;15 minutes per coop.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>Every 2&ndash;3 days</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Harvest fresh herbs for market and restaurant orders. Cut herbs in the morning (not afternoon heat). Bundle immediately, store in water in cooler. Dill, cilantro, and chives are the highest-volume weekly movers. Restaurants typically want orders confirmed Monday for Wednesday or Friday delivery.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>Every 2&ndash;3 weeks (season)</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Apply compost tea drench to all perennial plots. Brew from on-farm compost in 5-gallon bucket with aquarium pump aerating 24&ndash;36 hours. Apply as soil drench. This delivers microbial populations and soluble nutrients directly to the root zone. Critical on CEC 2.48 soil.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+    <tr><td data-edit>4&ndash;6x per season</td><td data-edit><span class="cat-tag cat-P">Perennial</span></td><td data-edit><span class="pri-med">MED</span></td><td data-edit>Chop-and-drop comfrey (Bocking 14) throughout all perennial plots. Cut entire plant to ground, leave in place as mulch. This deposits subsoil-mined potassium, calcium, and phosphorus at the surface. Comfrey regrows quickly. 4&ndash;6 chops per season is the regenerative fertility backbone of the whole system.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+  </tbody></table>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+</script>
+</body>
+</html>

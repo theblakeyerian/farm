@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Farmers Market</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#1a2e14;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+canvas{display:block}
+.cost-pos{color:#2d5a1b;font-weight:500}
+.cost-neg{color:#993C1D;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Click any cell to edit. Add or remove rows. Saved to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode active</span>
+  <button class="btn btn-save" onclick="saveData()">Save changes</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+</div>
+
+<div class="sec-hdr">
+  <span style="font-size:20px">&#127978;</span>
+  <h2>Farmers Market &amp; Direct Sales</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">
+    <span class="bdg">65% direct market &middot; 35% restaurant wholesale</span>
+    <span class="bdg">$148,000 gross (Year 3+)</span>
+    <span class="bdg">~$7,500&ndash;9,000 annual packaging + market cost</span>
+  </div>
+</div>
+<div class="sb">
+  <div style="display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'mkt','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','markets')">Market Schedule</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','packaging')">Packaging</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','setup')">Market Setup</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','restaurant')">Restaurant Accounts</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','branding')">Branding + Payment</div>
+    <div class="sub-tab" onclick="subTab(this,'mkt','budget')">Annual Budget</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="mkt-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Direct market revenue (65%)</div><div class="mc-v">$96,200</div><div class="mc-s">Farmers markets + farm stand + online orders</div></div>
+      <div class="mc"><div class="mc-l">Restaurant wholesale (35%)</div><div class="mc-v">$51,800</div><div class="mc-s">Weekly standing orders · 3&ndash;6 accounts</div></div>
+      <div class="mc"><div class="mc-l">Annual packaging cost</div><div class="mc-v" style="color:#993C1D">~$4,200</div><div class="mc-s">Bags, clamshells, cartons, rubber bands, twist ties</div></div>
+      <div class="mc"><div class="mc-l">Annual market fees + transport</div><div class="mc-v" style="color:#993C1D">~$3,500</div><div class="mc-s">Booth fees, fuel, market licenses</div></div>
+    </div>
+    <div class="note">Revenue split follows the master plan: 65% direct market, 35% restaurant wholesale. The restaurant channel is higher margin (no booth time, bulk packing, standing orders) but requires reliability above all else. One missed delivery drops a restaurant account. The market channel has lower per-hour return but builds brand recognition, drives flower sales that increase all other sales 20&ndash;30%, and gives direct customer feedback that shapes what to grow more of. Both channels are essential and reinforce each other.</div>
+    <div style="position:relative;height:220px;margin-top:14px"><canvas id="monthlyRevChart"></canvas></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#666;margin-top:8px">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2d5a1b;display:inline-block"></span>Perennial</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c47f17;display:inline-block"></span>Annual veg</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#7F77DD;display:inline-block"></span>Flowers</span>
+    </div>
+  </div>
+
+  <!-- MARKET SCHEDULE -->
+  <div id="mkt-markets" class="sub-panel">
+    <p class="sl">Target markets &mdash; Lancaster County + Northern Neck Virginia</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="markets-table">
+      <thead><tr><th>Market</th><th>Location</th><th>Day + Time</th><th>Season</th><th>Booth fee</th><th>Priority</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit><strong>Kilmarnock Farmers Market</strong></td><td data-edit>Kilmarnock, VA (Lancaster County seat)</td><td data-edit>Saturday, 8 AM &ndash; 12 PM</td><td data-edit>May &ndash; Oct (weekly)</td><td data-edit>~$30&ndash;50/week</td><td data-edit><span style="color:#c0392b;font-weight:600">PRIMARY</span></td><td data-edit>Largest, most established Northern Neck market. Apply Jan for spring season. Best restaurant buyer contact point. Flower display here drives all sales.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>White Stone Farmers Market</strong></td><td data-edit>White Stone, VA (Rappahannock riverfront)</td><td data-edit>Saturday, 8 AM &ndash; 12 PM</td><td data-edit>May &ndash; Oct (weekly)</td><td data-edit>~$20&ndash;35/week</td><td data-edit><span style="color:#854F0B;font-weight:600">SECONDARY</span></td><td data-edit>Smaller but high-income customer base (waterfront vacation homes). Strong flower and specialty herb sales. Consider alternating with Kilmarnock Year 1, both Year 2+.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Irvington Farmers Market</strong></td><td data-edit>Irvington, VA (The Tides Inn area)</td><td data-edit>Wednesday or Saturday (confirm with market)</td><td data-edit>May &ndash; Sep</td><td data-edit>~$20&ndash;30/week</td><td data-edit><span style="color:#854F0B;font-weight:600">SECONDARY</span></td><td data-edit>Tourist and vacation rental traffic. Good cut flower and specialty herb market. Evaluate Year 2 once you have production surplus. Do not overcommit Year 1.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Holiday + Fall Markets</strong></td><td data-edit>Rotate among above venues</td><td data-edit>Nov &ndash; Dec (varies)</td><td data-edit>Thanksgiving + Christmas season</td><td data-edit>~$40&ndash;80/market day</td><td data-edit><span style="color:#2d5a1b;font-weight:600">HIGH VALUE</span></td><td data-edit>Dried lavender bundles, elderberry syrup, herb gift sets, dried flower wreaths. These markets have highest per-hour revenue of the year. Priority despite small attendance.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Farm Stand (on-property)</strong></td><td data-edit>Edgehill Farm &mdash; honor system or staffed</td><td data-edit>Ongoing as harvest allows</td><td data-edit>Year-round</td><td data-edit>$0 booth fee</td><td data-edit><span style="color:#2d5a1b;font-weight:600">ZERO COST</span></td><td data-edit>Honor-system farm stand for passers-by. Requires signage and safe-box. Zero labor cost. Best for surplus that won't hold to next market day. Eggs sell especially well this way.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:10px">Apply to markets in January for spring season openings. Many Northern Neck markets have short waitlists for produce vendors, but contact market managers before applying to understand what categories are already overrepresented. Sorrel, lovage, sea beans, cutting celery, and specialty pepper varieties are almost certainly not represented at any of these markets &mdash; lead with your most unusual products in the application.</div>
+  </div>
+
+  <!-- PACKAGING -->
+  <div id="mkt-packaging" class="sub-panel">
+    <p class="sl">Packaging by product category &mdash; edit quantities and sources freely</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="packaging-table">
+      <thead><tr><th>Product category</th><th>Package type</th><th>Unit cost</th><th>Annual qty</th><th>Annual cost</th><th>Source</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="8">EGGS</td></tr>
+        <tr><td data-edit>Eggs (pastured Brahma)</td><td data-edit>Recycled paper pulp carton, 12-egg</td><td data-edit>$0.28&ndash;0.32 each</td><td data-edit>~1,200/yr (8 coops steady state)</td><td data-edit class="cost-neg">~$360</td><td data-edit>Egg Cartons Inc., PacknWood, or Amazon bulk</td><td data-edit>Buy in cases of 250. Kraft natural color is preferred over white &mdash; consistent with farm brand. Stamp or label with Edgehill Farm name + pack date + "Pasture Raised."</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">FRESH HERBS</td></tr>
+        <tr><td data-edit>Fresh herb bunches (all types)</td><td data-edit>Rubber band bundle + kraft paper sleeve</td><td data-edit>$0.04 rubber band + $0.08 sleeve</td><td data-edit>~3,000 bunches/yr</td><td data-edit class="cost-neg">~$360</td><td data-edit>Rubber bands: Staples bulk. Sleeves: custom-printed kraft from Sticker Mule or noissue ($0.08&ndash;0.12 printed)</td><td data-edit>Sleeve printed with farm name and herb name. Simple and professional. Bunches: 1 oz for small herbs (tarragon, thyme), 2 oz for large (parsley, cilantro, lovage). Use digital scale to standardize.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Fresh herb clamshells (restaurant accounts)</td><td data-edit>Clear hinged clamshell, 4 oz</td><td data-edit>$0.15&ndash;0.18 each</td><td data-edit>~800/yr</td><td data-edit class="cost-neg">~$130</td><td data-edit>WebstaurantStore or Uline</td><td data-edit>Restaurant accounts prefer clamshells over bundles &mdash; easier to refrigerate in a line kitchen. Label with farm name, herb name, weight, pack date.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">SALAD + GREENS</td></tr>
+        <tr><td data-edit>Salad mix (direct market)</td><td data-edit>Clear clamshell, 4 oz or 8 oz</td><td data-edit>$0.18&ndash;0.22 each</td><td data-edit>~1,500/yr</td><td data-edit class="cost-neg">~$300</td><td data-edit>WebstaurantStore (buy in case of 200)</td><td data-edit>4 oz clamshell sells at market for $6; 8 oz for $10. Clamshells protect delicate baby greens better than bags. Pre-weigh morning of market; do not pack night before (wilts).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Salad mix (restaurant bulk)</td><td data-edit>Resealable poly bag, 1 lb</td><td data-edit>$0.08&ndash;0.10 each</td><td data-edit>~400/yr</td><td data-edit class="cost-neg">~$36</td><td data-edit>Uline or Amazon bulk (1000-count box)</td><td data-edit>Restaurants buy 1&ndash;2 lb bags. Use food-safe zip-lock resealable. Label with weight, pack date, farm name. Deliver same day harvested where possible.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Kale + chard bunches</td><td data-edit>Rubber band + twist tie</td><td data-edit>$0.05 each</td><td data-edit>~600/yr</td><td data-edit class="cost-neg">~$30</td><td data-edit>Standard produce rubber bands (Sam's Club bulk)</td><td data-edit>Large-leaf greens sell loose by the bunch (5&ndash;7 stems). No bag needed if bunched tightly. Mist before market to maintain appearance.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">TOMATOES + VEGETABLES</td></tr>
+        <tr><td data-edit>Cherry tomatoes</td><td data-edit>Clear pint clamshell</td><td data-edit>$0.18&ndash;0.22 each</td><td data-edit>~1,800/yr</td><td data-edit class="cost-neg">~$360</td><td data-edit>WebstaurantStore (case of 200)</td><td data-edit>Pint clamshells are the industry standard for cherry tomatoes. Do not use plastic bags &mdash; they crush. Never refrigerate cherry tomatoes before market &mdash; destroys flavor.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Heirloom slicers</td><td data-edit>Kraft paper bag or open flat basket display</td><td data-edit>$0.10/bag</td><td data-edit>~800/yr</td><td data-edit class="cost-neg">~$80</td><td data-edit>Kraft SOS bags from Uline</td><td data-edit>Heirlooms sell best displayed loose on the table (shows variety). Bag at point of sale. Price by weight at market ($4&ndash;5/lb) &mdash; need a hanging scale or the market NTEP scale.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Peppers (all types)</td><td data-edit>Clear clamshell 1 lb or open display + paper bag</td><td data-edit>$0.15 each</td><td data-edit>~700/yr</td><td data-edit class="cost-neg">~$105</td><td data-edit>WebstaurantStore</td><td data-edit>Shishito and specialty peppers sell best in 1/2-lb clamshells pre-weighed ($4&ndash;5 each). Bell and sweet: display loose, sell by the piece or weight.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Root vegetables (carrots, beets, radishes)</td><td data-edit>Rubber band bunched with tops</td><td data-edit>$0.04 each</td><td data-edit>~1,200 bunches</td><td data-edit class="cost-neg">~$48</td><td data-edit>Produce rubber bands bulk</td><td data-edit>Bunched with tops is premium presentation and adds perceived value. Chioggia and Touchstone Gold beets bunched separately by color &mdash; do not mix varieties in one bunch. Carrot tops must be fresh; trim if wilted.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Beans + snap peas</td><td data-edit>Paper bag 1/2 lb or 1 lb</td><td data-edit>$0.10 each</td><td data-edit>~600/yr</td><td data-edit class="cost-neg">~$60</td><td data-edit>Kraft SOS bags, Uline</td><td data-edit>Snap peas and beans are sturdy. Pre-bag in 1/2 lb ($3) and 1 lb ($5) bags morning of market. Dragon Tongue and Purple Queen displayed loose sell on visual impact &mdash; let customers see them before bagging.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Garlic (bulbs)</td><td data-edit>Loose display, paper bag at sale</td><td data-edit>$0.05/bag</td><td data-edit>~300/yr</td><td data-edit class="cost-neg">~$15</td><td data-edit>Small kraft bags</td><td data-edit>Cured garlic displayed in baskets or shallow crates. Sell 2-head ($5) or 5-head ($10) bundles. Scapes (May only) sold loose in bunches of 5&ndash;8. Scapes have near-zero local competition &mdash; bring everything you have.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">BERRIES + PERENNIAL SPECIALTY</td></tr>
+        <tr><td data-edit>Strawberries</td><td data-edit>Green cardboard quart berry basket</td><td data-edit>$0.20&ndash;0.25 each</td><td data-edit>~400/yr</td><td data-edit class="cost-neg">~$90</td><td data-edit>WebstaurantStore (case of 250)</td><td data-edit>Never use plastic bags for strawberries &mdash; they compress and leak. Green wood pulp baskets are traditional, expected, and attractive. Sell same-day &mdash; do not refrigerate and rewarm (destroys texture). Charge a premium: $6&ndash;8/quart for pastured farm.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Currants + gooseberries</td><td data-edit>Clear clamshell 1/2 pint or 1/2 lb</td><td data-edit>$0.18 each</td><td data-edit>~300/yr</td><td data-edit class="cost-neg">~$54</td><td data-edit>WebstaurantStore</td><td data-edit>These are specialty products at $5&ndash;8/half-pint. Display with a small tasting sample &mdash; most customers have never had a fresh gooseberry. The tasting converts almost everyone. Label variety on each clamshell.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Turmeric + ginger (fresh)</td><td data-edit>Paper bag (1/4 lb, 1/2 lb, 1 lb)</td><td data-edit>$0.08&ndash;0.12 each</td><td data-edit>~500/yr</td><td data-edit class="cost-neg">~$50</td><td data-edit>Kraft SOS bags, Uline. Print sticker labels.</td><td data-edit>Sell by weight. Display cleaned whole roots with a small card explaining fresh vs dried difference. Restaurants buy by the pound &mdash; have 1-lb bags ready for wholesale accounts. Most customers have never seen fresh turmeric.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Dried elderberries + lavender bundles</td><td data-edit>Cellophane bag or open display with kraft tag</td><td data-edit>$0.15&ndash;0.25 each</td><td data-edit>~300/yr</td><td data-edit class="cost-neg">~$60</td><td data-edit>Cello bags: Nashville Wraps. Kraft tags: Avery printable or pre-cut.</td><td data-edit>Lavender: 25-stem bundles with rubber band and kraft tag. Elderberries: 2-oz or 4-oz cello bags sealed with heat or twist tie. These are the primary holiday market products &mdash; buy cello bags in quantity before fall.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">CUT FLOWERS</td></tr>
+        <tr><td data-edit>Mixed bouquets (market)</td><td data-edit>Clear floral sleeve or kraft paper cone</td><td data-edit>$0.15&ndash;0.25 each</td><td data-edit>~800/yr</td><td data-edit class="cost-neg">~$160</td><td data-edit>Floral sleeves: Syndicate Sales or FiftyFlowers wholesale. Kraft cones: Nashville Wraps.</td><td data-edit>Wrap mixed bouquets in branded kraft paper. 10-stem mixed bouquet: $18&ndash;25. 5-stem single variety: $10&ndash;15. Display vertically in buckets of water at the booth &mdash; this is your booth draw, not just a product. Never sell flat.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Single-stem specialty (dahlias, lisianthus)</td><td data-edit>Tissue wrap + rubber band</td><td data-edit>$0.05 each</td><td data-edit>~600/yr</td><td data-edit class="cost-neg">~$30</td><td data-edit>Tissue paper in rolls, any craft supplier</td><td data-edit>Single dinner-plate dahlias: $3&ndash;5/stem, tissue-wrapped. Lisianthus: $3&ndash;5/stem or in 3-stem bunches at $10. These are impulse purchases for people who didn't plan to buy flowers. Position near the payment area.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Dried flower arrangements (holiday)</td><td data-edit>Kraft tag + rubber band or floral wire</td><td data-edit>$0.10 each</td><td data-edit>~150/yr</td><td data-edit class="cost-neg">~$15</td><td data-edit>Kraft tags: Avery printable</td><td data-edit>Dried statice + strawflower + amaranth bundles: $12&ndash;18 each. Dried lavender bundles: $8&ndash;12. Holiday wreaths (if you make them): $25&ndash;45. These carry the December market single-handedly.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info" style="margin-top:10px">Total annual packaging estimate: <strong>~$2,300&ndash;2,700</strong> at Year 3+ full production. Buy in bulk (case quantities) &mdash; per-unit cost drops 30&ndash;40% vs. buying small quantities. Order your first supply in February before the season starts. WebstaurantStore and Uline both ship to Virginia with 2-day delivery.</div>
+  </div>
+
+  <!-- MARKET SETUP + EQUIPMENT -->
+  <div id="mkt-setup" class="sub-panel">
+    <p class="sl">Booth setup &amp; equipment &mdash; one-time investments + annual consumables</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="setup-table">
+      <thead><tr><th>Item</th><th>Cost</th><th>Buy / Annual</th><th>Priority</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="6">BOOTH STRUCTURE</td></tr>
+        <tr><td data-edit>10&times;10 ft EZ-Up canopy (heavy-duty)</td><td data-edit>$300&ndash;500</td><td data-edit>One-time (lasts 5+ yrs)</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>Get a commercial-grade unit (Eurmax or Impact Canopy) not a consumer one &mdash; consumer canopies collapse in wind. Tent weights (40 lbs each, ×4) are mandatory at most markets and in any breeze. White is standard; a farm color is better.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Canopy weight bags ×4 (filled with sand)</td><td data-edit>$40&ndash;80</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>40 lbs per corner minimum. Fill with sand on-site. Most markets require these by rule. An unfilled canopy in a gust is a hazard to neighboring vendors.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Folding tables (6-ft, 3 total)</td><td data-edit>$60&ndash;90 each</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>3 tables: 2 front for main display, 1 side or rear for staging/packing. Lifetime 6-ft commercial tables are the standard. Use table covers (black or branded) to hide under-table storage.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Table covers / cloths (fitted, 3)</td><td data-edit>$20&ndash;35 each</td><td data-edit>One-time</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>Solid black or farm color. Fitted style hides the underside storage neatly. Wash weekly during season &mdash; stained tablecloths drop perceived quality of everything on them.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">SIGNAGE + DISPLAY</td></tr>
+        <tr><td data-edit>Farm banner (2&times;5 ft vinyl, grommeted)</td><td data-edit>$40&ndash;80</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>Hang from canopy front rail. Farm name + "Lancaster County, Virginia" + one key descriptor ("Regenerative &middot; Pastured &middot; Specialty"). Vistaprint or GotPrint for quality at reasonable price.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Chalkboard signs (A-frame or tabletop, 6&ndash;8)</td><td data-edit>$8&ndash;15 each</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>One per product category. Chalk ink markers (not chalk) &mdash; they don't smear in humidity and are legible in bright sunlight. Write price + variety. "Sorrel &mdash; $4/bunch. First of the season." Not just "Sorrel $4."</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Chalk ink markers (Bistro or Molotow brand)</td><td data-edit>$6&ndash;8 each, need 4</td><td data-edit>Annual (replace as used)</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>White and one color. Do not use regular chalk &mdash; it smears in humidity and is unreadable in sunlight.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Display crates + baskets (10&ndash;12 total)</td><td data-edit>$10&ndash;20 each</td><td data-edit>One-time</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>Wood crates (look great, heavy) or wicker baskets (lighter). Layer heights: put blocks under crates to create a sloped tiered display. A flat table of stuff reads as a grocery store; a tiered table reads as a farm.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>5-gal buckets ×8 (for cut flowers)</td><td data-edit>$4&ndash;6 each</td><td data-edit>One-time</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>Flowers must stay in water at all times. 8 buckets handles peak dahlia + sunflower + zinnia season when you have 5+ varieties on the table simultaneously. White bucket sleeves ($2 each) for a branded look.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Spray bottle (fine mist, 1 qt)</td><td data-edit>$6</td><td data-edit>One-time</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>Mist greens, herbs, and root vegetables every 30 minutes in warm weather. Nothing signals freshness faster and wilted greens drop sales immediately. Keep one in the booth at all times.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">WEIGHING + PAYMENT</td></tr>
+        <tr><td data-edit>NTEP-certified market scale</td><td data-edit>$300&ndash;400</td><td data-edit>One-time (calibrate annually ~$30)</td><td data-edit><span style="color:#c0392b;font-weight:600">REQUIRED BY LAW</span></td><td data-edit>Required by Virginia law for legal-for-trade sales at farmers markets. Must display VA Dept of Agriculture certification sticker. Without it you cannot legally sell by weight. Get a Tor Rey or Detecto brand. Calibrate each year.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Square Reader + stand (payment terminal)</td><td data-edit>$49 reader + $169 stand</td><td data-edit>One-time (2.6% + $0.10 per swipe)</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>Most Northern Neck market customers pay by card. Cash-only vendors lose 30&ndash;40% of sales at markets in this income bracket. Square is the standard &mdash; works offline and syncs when connected. Get the Square Stand for iPad for fastest checkout.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Cash box + change float</td><td data-edit>$25 box + $100 change float</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>Start with $100 in small bills ($1, $5, $10) and quarters. Refresh as needed. Keep under the table, never on it. Count at end of each market.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">TRANSPORT + COLD CHAIN</td></tr>
+        <tr><td data-edit>Insulated transport coolers (2 large)</td><td data-edit>$60&ndash;120 each</td><td data-edit>One-time</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1</span></td><td data-edit>Produce must move from farm cooler to market at 38&ndash;45&deg;F. 2 large Igloo or Coleman coolers with reusable ice packs. Greens, herbs, and eggs all travel in these. Do not use the same cooler for flowers (ethylene from cut stems damages nearby produce).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Reusable ice packs (12 total)</td><td data-edit>$4&ndash;6 each</td><td data-edit>One-time (refreeze each week)</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>12 packs rotated between two coolers. Large flat packs (Cooler Shock or Techni Ice) maintain temperature longer than small packs. Refreeze overnight after each market.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Collapsible harvest crates (10 total)</td><td data-edit>$20&ndash;30 each</td><td data-edit>One-time</td><td data-edit><span style="color:#854F0B;font-weight:600">BEFORE MARKET</span></td><td data-edit>Stack flat when empty, open for transport. Used to move packaged product from barn to vehicle to market table. Cannot carry loose product (no drainage) but ideal for pre-packaged goods.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info" style="margin-top:10px"><strong>One-time setup total: ~$1,800&ndash;2,800</strong> &middot; Annual consumables (ice, chalk, occasional signage refresh): ~$150/yr. The biggest recurring cost is Square's 2.6% processing fee &mdash; at $96,000 in direct market sales that's ~$2,500/year. Worth every cent vs. cash-only.</div>
+  </div>
+
+  <!-- RESTAURANT ACCOUNTS -->
+  <div id="mkt-restaurant" class="sub-panel">
+    <p class="sl">Restaurant account strategy &mdash; Northern Neck + Rappahannock region</p>
+    <div class="grid3">
+      <div class="mc"><div class="mc-l">Target accounts</div><div class="mc-v">3&ndash;6 restaurants</div><div class="mc-s">Start with 2&ndash;3 Year 1 · grow to 5&ndash;6 by Year 3</div></div>
+      <div class="mc"><div class="mc-l">Order cadence</div><div class="mc-v">Weekly standing orders</div><div class="mc-s">Same day each week · Wednesday or Friday delivery</div></div>
+      <div class="mc"><div class="mc-l">Minimum order</div><div class="mc-v">$75&ndash;150/week</div><div class="mc-s">Below this threshold delivery isn't worth the time</div></div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:10px">
+    <table class="tbl" data-table="restaurant-table">
+      <thead><tr><th>Target restaurant type</th><th>Key products</th><th>Price premium</th><th>Approach strategy</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Seafood-forward fine dining (Irvington, Kilmarnock, White Stone)</td><td data-edit>Sorrel, cutting celery, lovage, sea beans, Vietnamese coriander, French tarragon, microgreens, arugula, specialty peppers</td><td data-edit>20&ndash;40% over market price</td><td data-edit>Bring samples in February before season starts. Any chef in Northern Neck who cooks local seafood needs sorrel and cutting celery. Arrive at 10 AM (after breakfast prep, before lunch). Ask for the chef, not a server.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Farm-to-table casual (Northern Neck area)</td><td data-edit>Heirloom tomatoes, specialty greens, mixed pepper cases, garlic (including scapes), seasonal flower garnish</td><td data-edit>10&ndash;25% over market price</td><td data-edit>These accounts buy volume. Offer a weekly box of whatever's best rather than individual items. This is lower-margin but more predictable volume. Good for surplus management.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Craft brewery (hops)</td><td data-edit>Dry hops: Cascade, Centennial, Columbus, Nugget (Year 3+)</td><td data-edit>$10&ndash;15/lb dry &mdash; premium over commercial</td><td data-edit>Approach in Year 2 before first harvest. Northern Neck has growing craft brewery presence. Freshness is the selling point &mdash; local hops arrive faster and fresher than commercial. Request a trial batch before committing to annual contract.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Local wineries (grapes, Year 4+)</td><td data-edit>Norton, Chambourcin (red) &middot; Vidal Blanc, Chardonel (white)</td><td data-edit>Negotiated per ton (typical $1,200&ndash;2,500/ton VA wine grapes)</td><td data-edit>Ingleside Plantation Vineyards and Vault Field Vineyards are the closest established VA wineries. Contact in Year 2 to understand their varietal needs before your vines are in the ground &mdash; they may influence which varieties you prioritize.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:10px"><strong>Restaurant account rules:</strong> (1) Never promise what you can't deliver &mdash; one missed order loses the account. (2) Communicate shortfalls 48 hours early, not day-of. (3) Standardize your pack &mdash; restaurants need consistent pack weights, not "about a pound." (4) Invoice on delivery, net 14 days. Use a simple Google Sheet invoice template until you hit 4+ accounts, then consider FarmersWeb or Barn2Door for order management. (5) Your first 2 accounts should be restaurants you can personally visit &mdash; face-to-face relationships hold when supply gets tight.</div>
+  </div>
+
+  <!-- BRANDING + PAYMENT -->
+  <div id="mkt-branding" class="sub-panel">
+    <p class="sl">Branding, licensing, and payment setup</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="branding-table">
+      <thead><tr><th>Item</th><th>Cost</th><th>When needed</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="5">LEGAL + LICENSING</td></tr>
+        <tr><td data-edit>Virginia Department of Agriculture market vendor license</td><td data-edit>$0&ndash;50 (varies by market)</td><td data-edit>Before first market (Spring Year 1)</td><td data-edit>Most VA farmers markets require proof of farm operation. A signed letter from the county extension office or your farm business registration is typically sufficient. Contact VDACS for current requirements.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Virginia cottage food / farm sales registration</td><td data-edit>$0</td><td data-edit>Before selling processed products (elderberry syrup, lavender sachets, dried herbs)</td><td data-edit>Virginia's Cottage Food Law (updated 2023) allows direct farm sales of most dried, non-refrigerated products without a commercial kitchen license. Confirm current rules with VDACS before selling elderberry syrup &mdash; it's borderline "processed."</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Farm LLC or sole proprietor registration (Virginia SCC)</td><td data-edit>$100 LLC filing fee</td><td data-edit>Before any sales</td><td data-edit>File as an LLC to separate personal liability from farm operations. Virginia SCC online filing takes 15 minutes. Get an EIN from IRS.gov (free, instant). Open a dedicated farm checking account &mdash; never mix personal and farm finances.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Farm liability insurance</td><td data-edit>$400&ndash;700/yr</td><td data-edit>Before livestock arrive (October)</td><td data-edit>Most farmers markets require $1M general liability coverage as a condition of vendor participation. American Farm Bureau or Erie Insurance offer farm liability policies in Virginia. Required before livestock, markets, and any on-farm visitors.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="5">BRANDING</td></tr>
+        <tr><td data-edit>Farm logo design</td><td data-edit>$200&ndash;500 (designer) or $0 (Canva)</td><td data-edit>Before any market materials are printed</td><td data-edit>A simple, distinctive mark. Does not need to be elaborate. Works in one color (for rubber stamps). Works small (on an egg carton label). Works large (on a banner). Get this done before ordering any printed materials.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Rubber stamp (farm name + logo)</td><td data-edit>$25&ndash;40</td><td data-edit>Before first egg carton is sold</td><td data-edit>Custom rubber stamp for egg cartons, kraft bags, and paper sleeves. Faster than stickers and zero ongoing cost. 2-color stamp (name + "Pasture Raised") handles 90% of packaging needs.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Custom sticker labels (roll, 2-inch round)</td><td data-edit>$0.05&ndash;0.08/label in quantity</td><td data-edit>Before first market</td><td data-edit>Sticker Mule 1,000-label rolls. Used on clamshells, jam lids, herb clamshells. Design once, order in bulk. Include farm name, product name, weight, pack date fields (leave date blank to hand-write).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Product information cards (printed, 4&times;6)</td><td data-edit>$0.05/card · print 200</td><td data-edit>Before first market</td><td data-edit>One card per unusual product: sea beans, sorrel, lovage, Vietnamese coriander, skirret, goji berry. "What is this and how do I cook it?" This is the single most effective sales tool for specialty items. Print at home on cardstock.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="5">PAYMENT + ACCOUNTING</td></tr>
+        <tr><td data-edit>Square for Retail account + iPad</td><td data-edit>iPad ~$330 refurbished · Square free plan</td><td data-edit>Before first market</td><td data-edit>Square for Retail (free plan) lets you set up a product catalog so market checkout is tap-the-item, not type-the-price. Works offline. Syncs sales data automatically. 2.6% + $0.10 per card swipe. ~$2,500/yr at $96k market sales volume.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Farm accounting software (QuickBooks Simple Start or Wave)</td><td data-edit>Wave: free · QuickBooks: $20/mo</td><td data-edit>Before first sale</td><td data-edit>Track all income and expenses from day one. You need this for tax purposes (farm Schedule F), loan applications, and understanding which product categories are actually profitable. Wave is free and sufficient through Year 2 at minimum.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ANNUAL BUDGET -->
+  <div id="mkt-budget" class="sub-panel">
+    <p class="sl">Annual market + sales budget at Year 3+ maturity</p>
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Packaging (all products)</div><div class="mc-v" style="color:#993C1D">~$2,500/yr</div><div class="mc-s">Cartons, clamshells, bags, bundles, labels</div></div>
+      <div class="mc"><div class="mc-l">Market booth fees</div><div class="mc-v" style="color:#993C1D">~$1,500/yr</div><div class="mc-s">Kilmarnock primary + White Stone secondary + holiday markets</div></div>
+      <div class="mc"><div class="mc-l">Square card processing</div><div class="mc-v" style="color:#993C1D">~$2,500/yr</div><div class="mc-s">2.6% of $96,200 in direct market sales</div></div>
+      <div class="mc"><div class="mc-l">Transport (fuel + vehicle wear)</div><div class="mc-v" style="color:#993C1D">~$1,200/yr</div><div class="mc-s">~26 round trips to markets @~$46/trip avg</div></div>
+      <div class="mc"><div class="mc-l">Market license + insurance share</div><div class="mc-v" style="color:#993C1D">~$600/yr</div><div class="mc-s">Vendor licenses + farm liability insurance market allocation</div></div>
+      <div class="mc"><div class="mc-l">Signage refresh + consumables</div><div class="mc-v" style="color:#993C1D">~$200/yr</div><div class="mc-s">Chalk markers, replacement signs, occasional new display element</div></div>
+      <div class="mc"><div class="mc-l">Total market + sales cost</div><div class="mc-v" style="color:#993C1D">~$8,500/yr</div><div class="mc-s">Against $148,000 gross = 5.7% of gross revenue</div></div>
+      <div class="mc"><div class="mc-l">Net after market costs</div><div class="mc-v" style="color:#2d5a1b">~$139,500</div><div class="mc-s">Before farm input costs &mdash; market cost ratio is very efficient</div></div>
+    </div>
+    <div class="info" style="margin-top:10px">5.7% of gross revenue in market and sales costs is extremely efficient for direct farm sales. The industry average for CSA and farmers market operations is 8&ndash;15%. You benefit from low booth fees in a rural market, no middleman, and the integrated chicken egg carton cost being partially offset by the $8/dozen price point. The only variable cost that scales significantly with revenue is Square's processing fee.</div>
+    <div style="position:relative;height:200px;margin-top:14px"><canvas id="budgetChart"></canvas></div>
+  </div>
+</div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+
+function subTab(btn,s,p){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(s+'-'+p).classList.add('active');
+}
+
+
+// Monthly revenue chart
+const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const perRev=[2000,2500,4000,6500,7000,6000,5000,4500,5000,5500,4500,2500];
+const annRev=[0,0,1000,3000,7000,10000,10000,9500,7000,5500,3500,0];
+const floRev=[500,1000,1000,1500,4000,6000,6000,4000,5000,3000,2000,2500];
+
+new Chart(document.getElementById('monthlyRevChart'),{
+  type:'bar',
+  data:{
+    labels:months,
+    datasets:[
+      {label:'Perennial',data:perRev,backgroundColor:'#2d5a1b',borderRadius:2,borderSkipped:false},
+      {label:'Annual veg',data:annRev,backgroundColor:'#c47f17',borderRadius:2,borderSkipped:false},
+      {label:'Flowers',data:floRev,backgroundColor:'#7F77DD',borderRadius:2,borderSkipped:false},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{footer:items=>'Total: $'+items.reduce((s,i)=>s+i.raw,0).toLocaleString()}}},
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{color:'#888',font:{size:10}},border:{display:false}},
+      y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},border:{display:false},ticks:{color:'#888',callback:v=>'$'+v.toLocaleString()}}
+    }
+  }
+});
+
+// Budget donut
+new Chart(document.getElementById('budgetChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Packaging','Booth fees','Card processing','Transport','Insurance + licenses','Signage + misc'],
+    datasets:[{
+      data:[2500,1500,2500,1200,600,200],
+      backgroundColor:['#2d5a1b','#534AB7','#c47f17','#5c3a10','#7F77DD','#aaa'],
+      borderWidth:0
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'right',labels:{font:{size:11},color:'#555',boxWidth:12}},
+      tooltip:{callbacks:{label:ctx=>' $'+ctx.raw.toLocaleString()+'/yr'}}
+    }
+  }
+});
+</script>
+</body>
+</html>

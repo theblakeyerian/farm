@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Livestock</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#5c3a10;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px;margin-bottom:0}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.sec-hdr2{background:#7a5500;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px;margin-top:14px;margin-bottom:0}
+.sec-hdr2 h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+canvas{display:block}
+.calc-row{display:grid;grid-template-columns:2fr 90px 100px 1.6fr;font-size:12px;border-bottom:.5px solid var(--border)}
+.calc-row div{padding:6px 8px}
+.calc-hdr{background:#f8f7f4;font-size:10px;font-weight:500;color:var(--muted)}
+.calc-hl{background:#f0f5ea}
+.calc-dark{background:#27500A}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Click any table cell to edit. Add or remove rows. Changes saved to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode active</span>
+  <button class="btn btn-save" onclick="saveData()">Save changes</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+  <span style="font-size:11px;color:var(--muted)">Click &#10005; to remove a row</span>
+</div>
+
+<!-- ═══ SHEEP ═══════════════════════════════════════════════════════════════ -->
+<div class="sec-hdr">
+  <span style="font-size:20px">&#128017;</span>
+  <h2>Pastured Sheep &mdash; Katahdin</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">
+    <span class="bdg">~$34,780 net/yr (60-ewe ceiling)</span>
+    <span class="bdg">~900 hrs/yr at ceiling</span>
+    <span class="bdg">8 ewes &rarr; 60 ewes &middot; 2 rotating rams</span>
+  </div>
+</div>
+<div class="sb">
+  <div style="display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'sheep','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'sheep','ratio')">Space + Ratio</div>
+    <div class="sub-tab" onclick="subTab(this,'sheep','calendar')">Annual Cycle</div>
+    <div class="sub-tab" onclick="subTab(this,'sheep','herd')">Herd Growth</div>
+    <div class="sub-tab" onclick="subTab(this,'sheep','revenue')">Revenue</div>
+    <div class="sub-tab" onclick="subTab(this,'sheep','tools')">Tools</div>
+  </div>
+
+  <div id="sheep-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Starting herd</div><div class="mc-v" style="color:#5c3a10">8 ewes + 2 rams</div><div class="mc-s">Minimum viable for 1 coop (30 chickens)</div></div>
+      <div class="mc"><div class="mc-l">Breed</div><div class="mc-v" style="color:#5c3a10">Katahdin</div><div class="mc-s">Hair sheep &middot; no shearing &middot; parasite resistant &middot; excellent mothers</div></div>
+      <div class="mc"><div class="mc-l">2-ram ceiling</div><div class="mc-v" style="color:#5c3a10">60 ewes</div><div class="mc-s">30 ewes per ram &middot; natural growth cap Year 4</div></div>
+      <div class="mc"><div class="mc-l">Sale model</div><div class="mc-v" style="color:#5c3a10">Breed then sell</div><div class="mc-s">Bred ewe lambs $450 each &middot; confirmed-pregnant Nov&ndash;Dec</div></div>
+    </div>
+    <div class="grid3">
+      <div class="mc"><div class="mc-l">Lambing rate</div><div class="mc-v">175%</div><div class="mc-s">60% twins &middot; 20% singles &middot; 10% triplets &middot; 10% open</div></div>
+      <div class="mc"><div class="mc-l">Ram lambs (meat)</div><div class="mc-v">$345 net</div><div class="mc-s">43 lbs dressed &times; $10/lb &minus; $85 USDA mobile processing</div></div>
+      <div class="mc"><div class="mc-l">Pasture expansion</div><div class="mc-v">+2 ac/season</div><div class="mc-s">3 seasons/yr &middot; target 30 acres by Year 5</div></div>
+    </div>
+    <div class="note">Virginia's humid Coastal Plain is barber pole worm (Haemonchus contortus) territory. Katahdin are naturally resistant through FAMACHA-selective breeding pressure. No shearing ever. Minimal hoof trimming. They thrive in Zone 7b heat and humidity year-round without shelter. Register with KHSI (Katahdin Hair Sheep International) by Year 3 to push bred ewe prices from $450 to $550&ndash;700 &mdash; at 44 ewes per year that's +$4,400&ndash;11,000 annually.</div>
+    <div style="margin-top:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="mc"><div class="mc-l">Sheep net revenue (Year 5+)</div><div class="mc-v" style="color:#3B6D11">$34,780</div><div class="mc-s">After processing costs</div></div>
+      <div class="mc"><div class="mc-l">Sheep labor (Year 5+)</div><div class="mc-v">~308 hrs/yr</div><div class="mc-s">Daily rotation + lambing + sales events</div></div>
+      <div class="mc"><div class="mc-l">Revenue per hour &mdash; sheep</div><div class="mc-v" style="color:#2d5a1b">$113/hr</div><div class="mc-s">Net revenue &divide; annual labor hours</div></div>
+      <div class="mc"><div class="mc-l">Chickens net &divide; 973 hrs labor</div><div class="mc-v" style="color:#7a5500">$6.68/hr</div><div class="mc-s">The coops are worth it for fly control + soil, not the egg revenue per hour</div></div>
+    </div>
+    <div class="info" style="margin-top:8px">Sheep at $113/hr net revenue are the most time-efficient livestock operation on the farm. The chicken system at $6.68/hr egg revenue is not primarily a revenue play &mdash; its real value is fly control (saves $800&ndash;1,500/yr in fly products at 60 ewes), manure management, and soil biology. Evaluate the chickens as a <em>pasture improvement system that also produces eggs</em>, not the reverse.</div>
+  </div>
+
+  <div id="sheep-ratio" class="sub-panel">
+    <p class="sl">Daily paddock calculation &mdash; chicken density drives sizing, sheep fill it</p>
+    <div style="border:.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px">
+      <div class="calc-row calc-hdr"><div>Factor</div><div style="text-align:right">Value</div><div style="text-align:right">Result</div><div>Basis</div></div>
+      <div class="calc-row"><div>Chickens per coop</div><div style="text-align:right">30 birds</div><div style="text-align:right">&mdash;</div><div style="color:#555">Brahma hens per Alumi-Coop 12&times;10 ft</div></div>
+      <div class="calc-row"><div>Space per bird (intensive soil turning)</div><div style="text-align:right">50 sq ft</div><div style="text-align:right">&mdash;</div><div style="color:#555">Salatin eggmobile standard; enough to scratch all manure without over-working any spot</div></div>
+      <div class="calc-row calc-hl"><div style="font-weight:500">Daily paddock for 30 chickens</div><div style="text-align:right;font-weight:500">30 &times; 50</div><div style="text-align:right;font-weight:500;color:#3B6D11">1,500 sq ft</div><div>30 ft &times; 50 ft &mdash; matches farm's plot width geometry</div></div>
+      <div class="calc-row"><div>Pasture dry matter (Virginia Coastal Plain)</div><div style="text-align:right">2,200 lbs/ac</div><div style="text-align:right">75.8 lbs</div><div style="color:#555">1,500 sq ft = 0.0344 acres &times; 2,200 lbs DM/acre</div></div>
+      <div class="calc-row"><div>DM consumed by sheep (1/3 rule)</div><div style="text-align:right">&divide; 3</div><div style="text-align:right">25.3 lbs</div><div style="color:#555">1/3 eaten &middot; 1/3 trampled into soil &middot; 1/3 untouched for root recovery</div></div>
+      <div class="calc-row"><div>DM needed per Katahdin ewe per day</div><div style="text-align:right">3% body wt</div><div style="text-align:right">3.6 lbs</div><div style="color:#555">Katahdin avg ewe 120 lbs &times; 3%</div></div>
+      <div class="calc-row calc-hl"><div style="font-weight:500">Sheep in same 1,500 sq ft paddock</div><div style="text-align:right;font-weight:500">25.3 &divide; 3.6</div><div style="text-align:right;font-weight:500;color:#3B6D11">7.0 &rarr; 8</div><div>Rounded up to 8 for practical management</div></div>
+      <div class="calc-row" style="background:#27500A"><div style="color:#C0DD97;font-weight:500">Sheep : chicken ratio</div><div style="color:#C0DD97;text-align:right;font-weight:500">8 : 30</div><div style="color:#C0DD97;text-align:right;font-weight:500">1 : 3.75</div><div style="color:#C0DD97">1 coop of 30 Brahma hens per 8 ewes &middot; minimum start: 8 ewes + 2 rams</div></div>
+    </div>
+    <div class="note">At 2 acres: 87,120 sq ft &divide; 1,500 sq ft/paddock = 58 paddocks. Each rests 57 days before sheep return &mdash; ideal for barber pole worm larvae die-off (survive 60&ndash;90 days on pasture; 57-day rotation keeps just ahead of re-infestation). Sheep move to fresh paddock Day 1. Chickens follow same paddock Day 2.</div>
+  </div>
+
+  <div id="sheep-calendar" class="sub-panel">
+    <p class="sl">Annual sheep management cycle &mdash; all activities by month &middot; edit freely</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="sheep-cal-table">
+      <thead><tr><th style="min-width:200px">Activity</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th style="width:30px"></th></tr></thead>
+      <tbody id="sheepCalBody"></tbody>
+    </table>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;font-size:11px;flex-wrap:wrap">
+      <span><span style="background:#854F0B;color:#fff;padding:1px 5px;border-radius:2px">B</span> Breed</span>
+      <span><span style="background:#e8b84d;color:#5a3800;padding:1px 5px;border-radius:2px">L</span> Lamb</span>
+      <span><span style="background:#3B6D11;color:#fff;padding:1px 5px;border-radius:2px">H</span> Harvest / sell</span>
+      <span><span style="background:#7F77DD;color:#fff;padding:1px 5px;border-radius:2px">P</span> Pregnancy check / bred ewe sales</span>
+      <span><span style="background:#e0ddd6;padding:1px 5px;border-radius:2px">M</span> Maintenance</span>
+    </div>
+    <div class="note" style="margin-top:10px">Zone 7b grazing: Katahdin do not need housing. Cool-season grasses continue growing through November&ndash;December. Supplement hay January&ndash;February only (~4&ndash;5 lbs/ewe/day). Resume normal rotation in March when growth returns. The 57-day rest period in each paddock keeps the farm ahead of barber pole worm larvae re-infestation.</div>
+  </div>
+
+  <div id="sheep-herd" class="sub-panel">
+    <p class="sl">Herd growth &mdash; 8 ewes to 60-ewe ceiling &middot; 2-ram constraint &middot; breed-then-sell model</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="sheep-herd-table">
+      <thead><tr><th>Year</th><th style="text-align:right">Pasture (ac)</th><th style="text-align:right">Ewes breeding</th><th style="text-align:right">Lambs born</th><th style="text-align:right">Ram lambs sold</th><th style="text-align:right">Ewe lambs kept</th><th style="text-align:right">Bred ewes sold</th><th style="text-align:right">Ewes year-end</th><th style="text-align:right">Coops</th><th>Status</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Year 0 (setup)</td><td data-edit style="text-align:right">2</td><td data-edit style="text-align:right">&mdash;</td><td data-edit style="text-align:right">&mdash;</td><td data-edit style="text-align:right">&mdash;</td><td data-edit style="text-align:right">&mdash;</td><td data-edit style="text-align:right">&mdash;</td><td data-edit style="text-align:right">8 ewes + 2 rams</td><td data-edit style="text-align:right">1</td><td data-edit>Arrive Oct. Begin paddock rotation.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Year 1</td><td data-edit style="text-align:right">8</td><td data-edit style="text-align:right">8</td><td data-edit style="text-align:right">14</td><td data-edit style="text-align:right">7</td><td data-edit style="text-align:right">7</td><td data-edit style="text-align:right">0</td><td data-edit style="text-align:right">15</td><td data-edit style="text-align:right">2</td><td data-edit>Under all caps. Building.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Year 2</td><td data-edit style="text-align:right">14</td><td data-edit style="text-align:right">15</td><td data-edit style="text-align:right">26</td><td data-edit style="text-align:right">13</td><td data-edit style="text-align:right">13</td><td data-edit style="text-align:right">0</td><td data-edit style="text-align:right">28</td><td data-edit style="text-align:right">4</td><td data-edit>Under all caps. Building.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr style="background:#fffbf0"><td data-edit>Year 3</td><td data-edit style="text-align:right">20</td><td data-edit style="text-align:right">28</td><td data-edit style="text-align:right">49</td><td data-edit style="text-align:right">25</td><td data-edit style="text-align:right">24</td><td data-edit style="text-align:right">0</td><td data-edit style="text-align:right">52</td><td data-edit style="text-align:right">7</td><td data-edit>&#9888; Approaching 2-ram ceiling. Decision point: continue to 60 ewes or cap at 28&ndash;40 to protect garden labor in March.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr style="background:#fff5f5"><td data-edit>Year 4</td><td data-edit style="text-align:right">26</td><td data-edit style="text-align:right">52</td><td data-edit style="text-align:right">91</td><td data-edit style="text-align:right">46</td><td data-edit style="text-align:right">8</td><td data-edit style="text-align:right">37 &times; $450</td><td data-edit style="text-align:right">60</td><td data-edit style="text-align:right">8</td><td data-edit>&#128308; Ram cap hit. Sell 37 bred ewes. Herd stabilizes at ceiling.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr style="background:#f0f5ea"><td data-edit>Year 5+ (steady)</td><td data-edit style="text-align:right">30</td><td data-edit style="text-align:right">60</td><td data-edit style="text-align:right">105</td><td data-edit style="text-align:right">53</td><td data-edit style="text-align:right">8 (replacements)</td><td data-edit style="text-align:right">44 &times; $450</td><td data-edit style="text-align:right">60 (stable)</td><td data-edit style="text-align:right">8</td><td data-edit>&#10003; Stable. Annual rhythm: 53 ram lambs sold Aug&ndash;Sep, 44 bred ewes sold Nov&ndash;Dec.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="sheep-revenue" class="sub-panel">
+    <p class="sl">Revenue at 60-ewe steady state (Year 5+)</p>
+    <div class="grid3">
+      <div class="mc"><div class="mc-l">Ram lambs (53 &times; $345 net)</div><div class="mc-v" style="color:#3B6D11">$18,285</div><div class="mc-s">43 lbs dressed &times; $10/lb &minus; $85 USDA mobile processing &middot; sold Aug&ndash;Sep</div></div>
+      <div class="mc"><div class="mc-l">Bred ewe lambs (44 &times; $450)</div><div class="mc-v" style="color:#3B6D11">$19,800</div><div class="mc-s">Confirmed-pregnant &middot; sold live Nov&ndash;Dec &middot; no processing cost</div></div>
+      <div class="mc"><div class="mc-l">Culled older ewes (8 &times; $150)</div><div class="mc-v" style="color:#3B6D11">$1,200</div><div class="mc-s">15&ndash;20% annual flock replacement &middot; sold as mutton (live)</div></div>
+      <div class="mc"><div class="mc-l">Gross total</div><div class="mc-v">$39,285</div><div class="mc-s">Before processing costs</div></div>
+      <div class="mc"><div class="mc-l">Processing (53 rams &times; $85)</div><div class="mc-v" style="color:#993C1D">&minus;$4,505</div><div class="mc-s">USDA mobile unit &middot; schedule 4&ndash;6 wks in advance</div></div>
+      <div class="mc"><div class="mc-l">Net sheep revenue</div><div class="mc-v" style="color:#27500A">~$34,780</div><div class="mc-s">Year 5+ steady state &middot; does not include egg revenue from paired coops</div></div>
+    </div>
+    <div style="position:relative;height:200px;margin-top:12px"><canvas id="sheepRevChart"></canvas></div>
+  </div>
+
+  <div id="sheep-tools" class="sub-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <p class="sl" style="margin:0">Sheep tools &mdash; edit freely</p>
+      <button class="btn btn-add" onclick="addRow('sheep-tools-table',5)">+ Add tool</button>
+    </div>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="sheep-tools-table">
+      <thead><tr><th>Tool</th><th>Cost</th><th>Priority</th><th>Use / timing</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Premier 1 ElectroNet (164-ft rolls)</td><td data-edit>~$180/roll &middot; need 6&ndash;10</td><td data-edit>HIGH</td><td data-edit>Daily paddock moves &middot; predator deterrent</td><td data-edit>Moveable electric netting; 1 roll = 2 paddocks; stakes built in; set up in under 5 minutes per move</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Ear tagger + USDA scrapie tags</td><td data-edit>~$40 tagger + $0.35/tag</td><td data-edit>HIGH</td><td data-edit>Tag all lambs at birth</td><td data-edit>Federal scrapie ID required by law. Two tags per animal for KHSI registry. Order before lambing season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>FAMACHA cards + drenching gun</td><td data-edit>~$30 gun &middot; free FAMACHA training</td><td data-edit>HIGH</td><td data-edit>Monthly May&ndash;Sep barber pole worm monitoring</td><td data-edit>Score lower eyelid 1&ndash;5. Treat only individuals scoring 3&ndash;5. Free certification through VA Cooperative Extension. Never blanket drench.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Weigh crate + digital livestock scale</td><td data-edit>~$400&ndash;800</td><td data-edit>HIGH</td><td data-edit>Weigh lambs monthly &middot; weigh ewes before breeding</td><td data-edit>Track ADG (target 0.5&ndash;0.75 lbs/day). Performance data is what makes KHSI-registered breeding stock valuable.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Portable ultrasound (or vet visit)</td><td data-edit>~$800&ndash;2,000 purchase &middot; or $300 vet for 60 ewes</td><td data-edit>HIGH</td><td data-edit>Pregnancy confirmation November &middot; once per year</td><td data-edit>Count fetuses per ewe — triplet ewes need extra feed in late gestation. Knowing this in advance saves lambs.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Livestock crayon + ram harness</td><td data-edit>~$30 harness + $8/crayon</td><td data-edit>MED</td><td data-edit>Breeding season Oct 1&ndash;Nov 15</td><td data-edit>Attach crayon to ram chest harness. Ewes marked after breeding. Change crayon color at 17 days to identify 2nd-cycle ewes.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Lambing kit (assembled before March)</td><td data-edit>~$80&ndash;100 assembled</td><td data-edit>HIGH</td><td data-edit>Lambing season March &middot; have ready by Feb 15</td><td data-edit>7% iodine (navel dipping), colostrum supplement, lamb puller, OB sleeves, clean towels, digital thermometer, lamb warming box, Pritchard nipples for bottle lambs.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>ATV or small tractor</td><td data-edit>~$4,000&ndash;15,000</td><td data-edit>HIGH</td><td data-edit>Move coops daily &middot; deliver hay bales in winter &middot; roll fencing</td><td data-edit>Essential at 30-acre scale. Moves chicken coops one paddock behind sheep each morning. Hauls harvest crates. Shared across all farm operations.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Hoof trimming stand + trimming shears</td><td data-edit>~$150&ndash;300</td><td data-edit>MED</td><td data-edit>Trim hooves 2&ndash;3x per year</td><td data-edit>Katahdin need minimal hoof work compared to wool breeds. Trim before breeding season and after lambing. Stand secures animal for solo trimming.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHICKENS ═══════════════════════════════════════════════════════════ -->
+<div class="sec-hdr2">
+  <span style="font-size:20px">&#128020;</span>
+  <h2>Pastured Chickens &mdash; Light Brahma</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">
+    <span class="bdg">~$6,500 net/yr (8-coop steady state)</span>
+    <span class="bdg">~973 hrs/yr at 8 coops (2.67 hrs/day every day)</span>
+    <span class="bdg">1 coop &rarr; 8 coops &middot; $8/dozen &middot; follows sheep day 2</span>
+  </div>
+</div>
+<div class="sb">
+  <div style="display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'chick','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'chick','feed')">Feed + Forage</div>
+    <div class="sub-tab" onclick="subTab(this,'chick','coops')">Coop Schedule</div>
+    <div class="sub-tab" onclick="subTab(this,'chick','revenue')">Revenue</div>
+    <div class="sub-tab" onclick="subTab(this,'chick','tools')">Tools</div>
+  </div>
+
+  <div id="chick-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">Coop</div><div class="mc-v" style="color:#7a5500">Alumi-Coop 12&times;10</div><div class="mc-s">$3,754 + 5.3% VA tax + $100 delivery = $4,053 each &middot; 2 already owned</div></div>
+      <div class="mc"><div class="mc-l">Breed</div><div class="mc-v" style="color:#7a5500">Light Brahma</div><div class="mc-s">Large dual-purpose &middot; excellent winter layer &middot; calm &middot; late maturing (wk 28&ndash;32)</div></div>
+      <div class="mc"><div class="mc-l">Ratio to sheep</div><div class="mc-v" style="color:#7a5500">1 coop per 8 ewes</div><div class="mc-s">50 sq ft/bird &times; 30 birds = 1,500 sq ft/day = 8 sheep</div></div>
+      <div class="mc"><div class="mc-l">Egg price</div><div class="mc-v" style="color:#7a5500">$8/dozen</div><div class="mc-s">$0.667/egg &middot; pastured Brahma eggs command full premium</div></div>
+    </div>
+    <div class="warn"><strong>Labor reality at 8 coops:</strong> 8 coops &times; ~20 minutes per coop per day (coop move + fermented feed + water + eggs) = <strong>2.67 hrs/day, 365 days per year = ~973 hrs/year.</strong> This is the largest single daily time commitment on the farm &mdash; more than any garden task. It cannot be deferred or batched. Build your daily routine around it before acquiring more coops than you can sustain solo.</div>
+    <div class="note" style="margin-top:8px">Brahmas lay through winter when most breeds stop &mdash; consistent revenue November&ndash;February. They forage actively behind the sheep rotation, consuming barber pole larvae, beetles, grubs, and earthworms. This is the farm's primary fly control mechanism &mdash; no products needed. At culling (Year 4), Brahma stew hens sell at $13&ndash;18 each due to their size and flavor. Autumn molt (Sep&ndash;Nov) = ~35 days no eggs; this coincides with peak root harvest revenue, which absorbs the gap.</div>
+  </div>
+
+  <div id="chick-feed" class="sub-panel">
+    <p class="sl">Daily feed calculation &mdash; fermented feed + pasture insect credit</p>
+    <div style="border:.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px">
+      <div class="calc-row calc-hdr"><div>Factor</div><div style="text-align:right">Value</div><div style="text-align:right">Adjusted</div><div>Basis</div></div>
+      <div class="calc-row"><div>Brahma base feed consumption</div><div style="text-align:right">0.30 lbs/bird/day</div><div style="text-align:right">&mdash;</div><div style="color:#555">Large breed (~8&ndash;10 lbs live weight); ~20% more than standard Leghorn-type layers</div></div>
+      <div class="calc-row calc-hl"><div>Fermented feed efficiency gain</div><div style="text-align:right">&minus;20%</div><div style="text-align:right;font-weight:500">0.24 lbs</div><div style="color:#555">Fermentation increases nutrient bioavailability; birds eat 15&ndash;20% less to achieve same production</div></div>
+      <div class="calc-row calc-hl"><div>Pasture insect credit (annual average)</div><div style="text-align:right">&minus;20%</div><div style="text-align:right;font-weight:500">0.192 lbs</div><div style="color:#555">Following sheep stirs fly larvae, beetles, grubs, earthworms; Virginia summer insect density very high</div></div>
+      <div class="calc-row" style="background:#27500A"><div style="color:#C0DD97;font-weight:500">Effective dry feed/bird/day</div><div style="color:#C0DD97;text-align:right">&mdash;</div><div style="color:#C0DD97;text-align:right;font-weight:500">0.192 lbs</div><div style="color:#C0DD97">At 240 birds (8 coops): $16.56/day total feed cost (~$6,045/year)</div></div>
+      <div class="calc-row"><div>Quality layer feed cost</div><div style="text-align:right">~$0.36/lb</div><div style="text-align:right">&mdash;</div><div style="color:#555">~$18/50 lb bag; ferment in 5-gal buckets 48&ndash;72 hours before feeding</div></div>
+      <div class="calc-row"><div>Cartons (12-egg, recycled paper)</div><div style="text-align:right">$0.30/carton</div><div style="text-align:right">&mdash;</div><div style="color:#555">Buy in cases of 250; ~1,200 cartons/yr at steady state = ~$360/yr</div></div>
+    </div>
+    <div class="note">How to ferment: Add feed to 5-gal food-grade bucket. Cover with water (2:1 water-to-feed ratio by weight). Stir. Loosely cover (needs air exchange). Leave at room temp 48&ndash;72 hrs until slightly sour-smelling and bubbling. Feed daily; start next batch same day you feed. Fermented liquid from the bottom can be diluted and given as drinking water. Reduces feed cost, improves gut health, typically increases production 5&ndash;10%.</div>
+  </div>
+
+  <div id="chick-coops" class="sub-panel">
+    <p class="sl">Rolling coop schedule &mdash; one new batch of 30 chicks every January &middot; staggered ages &middot; coop reused from Year 5</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="coops-table">
+      <thead><tr><th>Coop</th><th>Triggered by</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5 (steady)</th><th>Unit cost</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Coop 1 (owned)</td><td data-edit>Setup &mdash; 8 ewes</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>declining</td><td data-edit>cull &rarr; new chick</td><td data-edit>Already purchased</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 2 (owned)</td><td data-edit>Activate Year 1</td><td data-edit>idle &rarr; chick</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>declining</td><td data-edit>Already purchased</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 3 (buy Y1)</td><td data-edit>17+ ewes after Y1 lambing</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>declining</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 4 (buy Y2)</td><td data-edit>25+ ewes (Y2)</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>declining</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 5 (buy Y2&ndash;3)</td><td data-edit>33+ ewes</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 6 (buy Y3)</td><td data-edit>41+ ewes</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Coop 7 (buy Y3)</td><td data-edit>49+ ewes</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>peak yr 2</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr style="background:#f0f5ea"><td data-edit>Coop 8 &mdash; FINAL</td><td data-edit>57+ ewes (Y4) &mdash; last coop ever</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>chick &rarr; pullet</td><td data-edit>peak yr 1</td><td data-edit>$4,053</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:10px">Total infrastructure: 2 owned ($8,106) + 6 purchased ($24,318) = <strong>$32,424 total</strong>. From Year 5: no new coops ever. Cull oldest batch in January, deep-clean coop that week, new chicks arrive within days. Annual steady-state ongoing cost: ~30 chicks ($210) + feed (~$900) + cartons (~$360) = ~$1,470/year against ~$9,480 gross egg revenue.</div>
+  </div>
+
+  <div id="chick-revenue" class="sub-panel">
+    <div class="grid3">
+      <div class="mc"><div class="mc-l">Steady-state eggs/yr (8 coops)</div><div class="mc-v">~13,635</div><div class="mc-s">240 birds &middot; staggered ages &middot; post-molt adjusted &middot; $0.667/egg</div></div>
+      <div class="mc"><div class="mc-l">Egg gross (at $8/dozen)</div><div class="mc-v" style="color:#3B6D11">$9,090</div><div class="mc-s">13,635 eggs &times; $0.667</div></div>
+      <div class="mc"><div class="mc-l">Stew hen revenue (Year 5+)</div><div class="mc-v" style="color:#3B6D11">$390&ndash;540</div><div class="mc-s">30 birds/yr &times; $13&ndash;18 dressed Brahma</div></div>
+      <div class="mc"><div class="mc-l">Feed cost (8 coops)</div><div class="mc-v" style="color:#993C1D">&minus;$2,628</div><div class="mc-s">0.192 lbs/bird/day &times; 240 birds &times; $0.36/lb</div></div>
+      <div class="mc"><div class="mc-l">Carton cost</div><div class="mc-v" style="color:#993C1D">&minus;$360</div><div class="mc-s">~1,200 cartons/yr &times; $0.30</div></div>
+      <div class="mc"><div class="mc-l">Estimated net</div><div class="mc-v" style="color:#27500A">~$6,500</div><div class="mc-s">Egg gross + stew hens &minus; feed &minus; cartons</div></div>
+    </div>
+    <div class="note">The chickens are worth more than $6,500. They are the farm's primary fly control system (saving $800&ndash;1,500 in products at 60 ewes), they distribute and break down manure improving pasture quality, and their scratching behavior improves grass germination in every paddock they visit. The egg and stew hen revenue is the visible part; the pasture and parasite management value is equally significant.</div>
+  </div>
+
+  <div id="chick-tools" class="sub-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <p class="sl" style="margin:0">Chicken tools &mdash; edit freely</p>
+      <button class="btn btn-add" onclick="addRow('chick-tools-table',5)">+ Add tool</button>
+    </div>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="chick-tools-table">
+      <thead><tr><th>Tool</th><th>Cost</th><th>Priority</th><th>Use</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Fermentation buckets (5-gal food-grade)</td><td data-edit>~$8 each &middot; need 24&ndash;32</td><td data-edit>HIGH</td><td data-edit>Daily fermented feed production</td><td data-edit>3&ndash;4 buckets per coop; continuous batch rotation. Lid loosely placed — fermentation needs air exchange. At 8 coops: 24&ndash;32 buckets in rotation.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Solar auto-door opener (per coop)</td><td data-edit>~$80&ndash;120 each</td><td data-edit>HIGH</td><td data-edit>Open at sunrise, close at dusk automatically</td><td data-edit>Eliminates predator risk from forgetting to close the coop. Single most important safety device at multi-coop scale across 30 acres.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Brooder setup (one shared unit)</td><td data-edit>~$120 one-time</td><td data-edit>HIGH</td><td data-edit>January each year for new chick batch</td><td data-edit>Heat lamp, thermometer, chick feeders and waterers. One setup serves all 8 coop batches — each batch staggered by a year so only one brooder runs at a time in January.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Insulated egg transport coolers</td><td data-edit>~$60&ndash;120 each</td><td data-edit>HIGH</td><td data-edit>Keep eggs at 45&deg;F from collection to market</td><td data-edit>At 8 coops producing ~37 eggs/day: need 3&ndash;4 dozen capacity coolers for market transport. Eggs should never warm above 45&deg;F once refrigerated.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Egg candler + carton labels</td><td data-edit>~$15 candler &middot; ~$30&ndash;80 labels</td><td data-edit>MED</td><td data-edit>Quality check + branding</td><td data-edit>LED candler spots cracks and blood spots. Rubber stamp or custom label for Edgehill Farm branding. Required info: farm name, pack date, grade if claiming Grade A.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Electronet predator perimeter</td><td data-edit>Shared with sheep fencing</td><td data-edit>HIGH</td><td data-edit>Surrounds daily paddock including coop</td><td data-edit>Same electronet fence that defines the sheep paddock also surrounds the chicken coop. Deters fox, coyote, raccoon. Check energizer output monthly.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Production log per coop (paper)</td><td data-edit>~$0</td><td data-edit>MED</td><td data-edit>Daily egg count &middot; triggers cull decision</td><td data-edit>Track 4-week rolling average per coop. When average crosses below 50% of peak (~6 eggs/day from ~13), that coop triggers annual cull and restock. Simple paper log.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+
+
+// Sheep calendar
+const sheepCalData=[
+  ['Paddock rotation (daily move)',      ['M','M','M','M','M','M','M','M','M','M','M','M']],
+  ['Hay supplement (Jan&ndash;Feb + Dec)',['M','M','','','','','','','','','','M']],
+  ['FAMACHA parasite scoring',           ['','','','M','M','M','M','M','M','','','']],
+  ['Hoof trimming',                      ['M','','','M','','','','M','','','','']],
+  ['Pre-breeding flushing',              ['','','','','','','','M','M','','','']],
+  ['Ram harness + crayon fitting',       ['','','','','','','','','M','','','']],
+  ['Breeding season (Oct 1&ndash;Nov 15)',['','','','','','','','','','B','B','']],
+  ['Pregnancy confirm (ultrasound)',     ['','','','','','','','','','','P','']],
+  ['Bred ewe lamb sales (Nov&ndash;Dec)',['','','','','','','','','','','H','H']],
+  ['Grain supplement (last 6 wks gest)',['M','M','','','','','','','','','M','M']],
+  ['Lambing &mdash; peak activity',      ['','','L','L','','','','','','','','']],
+  ['Lamb tagging + iodine dip at birth', ['','','L','L','','','','','','','','']],
+  ['Lamb growth monitoring (weigh)',     ['','','','M','M','M','M','','','','','']],
+  ['Ram lamb harvest + sale (Aug&ndash;Sep)',['','','','','','','','H','H','','','']],
+  ['Ewe evaluation + cull older ewes',   ['','','','','','','','','H','','','']],
+];
+
+const calMap={'B':'c-breed cB','L':'c-lamb cL','H':'c-harvest cH','P':'c-preg','M':'c-maint cM'};
+const calColors={'B':'#854F0B','L':'#e8b84d','H':'#3B6D11','P':'#7F77DD','M':'#e0ddd6'};
+const calText={'B':'B','L':'L','H':'H','P':'P','M':'M'};
+
+const sheepCalBody=document.getElementById('sheepCalBody');
+sheepCalData.forEach(([name,months])=>{
+  const cells=months.map(m=>{
+    if(!m)return'<td></td>';
+    const bg=calColors[m]||'#eee';
+    const fc=m==='M'?'#888':'#fff';
+    return`<td><span class="cal-cell" style="background:${bg};color:${fc}">${calText[m]||m}</span></td>`;
+  }).join('');
+  sheepCalBody.innerHTML+=`<tr><td data-edit style="font-size:11px;font-weight:500;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</td>${cells}<td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>`;
+});
+
+// Sheep revenue chart
+new Chart(document.getElementById('sheepRevChart'),{
+  type:'bar',
+  data:{
+    labels:['Year 1','Year 2','Year 3','Year 4','Year 5+'],
+    datasets:[
+      {label:'Ram lambs (net)',data:[2415,4485,8625,15870,18285],backgroundColor:'#3B6D11',borderRadius:3,borderSkipped:false},
+      {label:'Bred ewes',data:[0,0,0,16650,19800],backgroundColor:'#97c459',borderRadius:3,borderSkipped:false},
+      {label:'Culled ewes',data:[0,0,0,0,1200],backgroundColor:'#c0dd97',borderRadius:3,borderSkipped:false},
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{footer:items=>'Total: $'+items.reduce((s,i)=>s+i.raw,0).toLocaleString()}}},
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{color:'#888'},border:{display:false}},
+      y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},border:{display:false},ticks:{color:'#888',callback:v=>'$'+v.toLocaleString()}}
+    }
+  }
+});
+</script>
+</body>
+</html>

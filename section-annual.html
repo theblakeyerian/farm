@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgehill Farm — Annual Vegetable Garden + Flowers</title>
+<style>
+
+:root{--gd:#1a2e14;--gm:#2d5a1b;--gl:#3B6D11;--amber:#c47f17;--purple:#3d2b7a;--brown:#5c3a10;--bg:#f0ede6;--card:#fff;--border:#e0ddd6;--text:#1e1e1a;--muted:#888;--sm:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--gd)}
+h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gm)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.sl:first-child{margin-top:0}
+.card{background:var(--card);border-radius:8px;border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.note{background:#f0f5ea;border-radius:6px;padding:9px 12px;font-size:12px;color:#2d5a1b;line-height:1.6;margin-top:8px}
+.warn{background:#fff8f0;border-radius:6px;padding:9px 12px;font-size:12px;color:#6a4000;line-height:1.6;margin-top:8px;border-left:3px solid var(--amber)}
+.info{background:#f5f3ee;border-radius:6px;padding:9px 12px;font-size:12px;color:var(--sm);line-height:1.6;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:5px 8px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--border);background:#f8f7f4;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:.5px solid #f0ede6;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.group td{background:var(--gm);color:#fff;font-weight:600;font-size:11px;padding:5px 8px}
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mc{background:#f8f7f4;border-radius:6px;padding:10px 12px;border:.5px solid var(--border)}
+.mc-l{font-size:10px;color:var(--muted);margin-bottom:2px}
+.mc-v{font-size:17px;font-weight:500}
+.mc-s{font-size:10px;color:#aaa;margin-top:1px}
+.edit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#fffbf0;border-radius:6px;border:.5px solid var(--amber);margin-bottom:12px}
+.edit-bar.hidden{display:none}
+.btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.btn-edit{background:var(--amber);color:#fff}
+.btn-save{background:var(--gm);color:#fff}
+.btn-reset{background:#e8e4da;color:var(--sm)}
+.btn-add{background:#e8f0fb;color:#1a3a7a;border:.5px solid #b0c8f0}
+.btn-del{background:#fde8e8;color:#7a1a1a;border:.5px solid #f0b0b0;padding:2px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+[contenteditable="true"]{outline:1px dashed var(--amber);background:#fffdf5;border-radius:2px;min-width:20px;cursor:text}
+[contenteditable="true"]:focus{outline:2px solid var(--amber)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gm);text-decoration:none;padding:5px 10px;background:var(--card);border-radius:5px;border:.5px solid var(--border);margin-bottom:14px}
+.sub-tabs{display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto}
+.sub-tab{padding:9px 12px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.sub-tab.active{color:var(--text);font-weight:500}
+.sub-panel{display:none;padding:14px 16px}
+.sub-panel.active{display:block}
+.cal-cell{display:block;text-align:center;border-radius:2px;font-size:9px;font-weight:700;padding:2px 0;line-height:1.2}
+.cP{background:#b8d98e;color:#1a4a00}.cH{background:#2d5a1b;color:#fff}
+.cM{background:#e0ddd6;color:#666}.cB{background:#854F0B;color:#fff}
+.cL{background:#e8b84d;color:#5a3800}.cF{background:#9b59b6;color:#fff}
+.cS{background:#5c3a10;color:#fff}
+.pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.pill-g{background:#eaf3de;color:#2d5a1b}.pill-a{background:#fff3e0;color:#854F0B}
+.pill-b{background:#fde8f0;color:#7a1a4a}.pill-r{background:#fde8e8;color:#7a1a1a}
+canvas{display:block}
+
+.sec-hdr{background:#2d5a1b;color:#fff;padding:12px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:10px}
+.sec-hdr h2{color:#fff;margin:0;font-size:15px;flex:1}
+.bdg{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.sb{border:.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;background:var(--card);margin-bottom:14px}
+canvas{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="dashboard.html">&#8592; Farm Dashboard</a>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn btn-edit" id="btnEdit" onclick="toggleEdit()">Edit this section</button>
+  <span style="font-size:11px;color:var(--muted)">Click any cell to edit. Add or remove rows. Save to browser storage.</span>
+</div>
+<div class="edit-bar hidden" id="editBar">
+  <span style="font-size:12px;font-weight:500;color:#854F0B">Editing mode</span>
+  <button class="btn btn-save" onclick="saveData()">Save</button>
+  <button class="btn btn-reset" onclick="resetData()">Reset to defaults</button>
+  <span style="font-size:11px;color:var(--muted)">Click &#10005; to remove row &middot; Use add buttons in each table header</span>
+</div>
+<div class="sec-hdr">
+  <span style="font-size:20px">&#127807;</span>
+  <h2>Annual Vegetable Garden + Flowers</h2>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto"><span class="bdg">$79,500/yr gross (Year 3+)</span><span class="bdg">~780 hrs/yr</span><span class="bdg">8 veg plots + 2 flower · 4 rotating pairs · 30-in rows</span></div>
+</div>
+<div class="sb">
+
+  <div style="display:flex;border-bottom:.5px solid var(--border);background:#f8f7f4;padding:0 14px;overflow-x:auto">
+    <div class="sub-tab active" onclick="subTab(this,'ann','overview')">Overview</div>
+    <div class="sub-tab" onclick="subTab(this,'ann','crops')">All Crops</div>
+    <div class="sub-tab" onclick="subTab(this,'ann','calendar')">Planting Calendar</div>
+    <div class="sub-tab" onclick="subTab(this,'ann','rotation')">Rotation Rules</div>
+    <div class="sub-tab" onclick="subTab(this,'ann','tools')">Tools</div>
+    <div class="sub-tab" onclick="subTab(this,'ann','infra')">Infrastructure</div>
+  </div>
+
+  <div id="ann-overview" class="sub-panel active">
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">A1 — Tomatoes (heavy)</div><div class="mc-v">$15,000</div><div class="mc-s">Cherry, heirloom, paste tomatoes + basil</div></div>
+      <div class="mc"><div class="mc-l">A2 — Cucumbers + Squash</div><div class="mc-v">$8,500</div><div class="mc-s">Marketmore, Diva, Lemon · Costata, Zephyr, Pattypan</div></div>
+      <div class="mc"><div class="mc-l">A3 — Peppers + Herbs</div><div class="mc-v">$10,000</div><div class="mc-s">Shishito, Jimmy Nardello, bell, hot + basil</div></div>
+      <div class="mc"><div class="mc-l">A4 — Kale + Greens</div><div class="mc-v">$7,000</div><div class="mc-s">Lacinato, Red Russian, Swiss chard, Asian greens</div></div>
+    </div>
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">A5 — Salad Mix + Lettuce</div><div class="mc-v">$13,000</div><div class="mc-s">Mesclun, Buttercrunch, Little Gem, arugula</div></div>
+      <div class="mc"><div class="mc-l">A6 — Carrots + Beets + Garlic</div><div class="mc-v">$7,500</div><div class="mc-s">Nantes, Chioggia, Touchstone Gold, Music garlic</div></div>
+      <div class="mc"><div class="mc-l">A7 — Broccoli + Cabbage</div><div class="mc-v">$9,000</div><div class="mc-s">Belstar + Arcadia · EJ Wakefield + Red Rock</div></div>
+      <div class="mc"><div class="mc-l">A8 — Beans + Peas + Spinach</div><div class="mc-v">$7,500</div><div class="mc-s">Sugar Snap, Provider, Dragon Tongue, Bloomsdale</div></div>
+    </div>
+    <div class="grid4">
+      <div class="mc"><div class="mc-l">F1 — Spring + Summer Flowers</div><div class="mc-v">$12,000</div><div class="mc-s">Dahlias, zinnias, lisianthus, celosia · Apr–Aug</div></div>
+      <div class="mc"><div class="mc-l">F2 — Summer + Fall Flowers</div><div class="mc-v">$12,500</div><div class="mc-s">Sunflowers, cosmos, statice, amaranth, snapdragons</div></div>
+      <div class="mc"><div class="mc-l">Total garden + flowers</div><div class="mc-v">$79,500/yr</div><div class="mc-s">Year 3+ at full production</div></div>
+      <div class="mc"><div class="mc-l">Labor</div><div class="mc-v">~780 hrs/yr</div><div class="mc-s">Peak: May–Jun at 112 hrs/month</div></div>
+    </div>
+    <div class="note">Row spacing: 30 in. throughout. Row length: 50 ft (across plot width). 40 rows/plot; 32 planted; 8 access paths. Each pair of plots swaps crops annually — minimum 2-year rotation for disease management. Salad mix is the highest revenue-per-square-foot crop on the farm at $8–10/lb. Flowers increase total booth sales 20–30% by attracting customers to the table.</div>
+  </div>
+
+  <div id="ann-crops" class="sub-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <p class="sl" style="margin:0">All crops sorted by plot &mdash; from master plan</p>
+      <button class="btn btn-add" onclick="addRow('crops-table',7)">+ Add crop</button>
+    </div>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="crops-table">
+      <thead><tr><th>Plot</th><th>Crop / Variety</th><th>Rows</th><th>Start method + date</th><th>Season</th><th>Est. revenue</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="8">A1 — TOMATOES (Year A heavy feeders &middot; swap with A2 Year B)</td></tr>
+        <tr><td data-edit>A1</td><td data-edit>Cherry Tomatoes (Sun Gold, Juliet, Black Cherry)</td><td data-edit>10</td><td data-edit>Start indoors Mar 1; transplant May 1</td><td data-edit>Jun–Oct</td><td data-edit>$5,000</td><td data-edit>Strongest market seller; restaurant demand limitless; stake or cage; succession-ripen across 5 months</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A1</td><td data-edit>Heirloom Slicers (Cherokee Purple, Brandywine, Mortgage Lifter)</td><td data-edit>8</td><td data-edit>Start indoors Mar 1; transplant May 1</td><td data-edit>Jul–Sep</td><td data-edit>$4,500</td><td data-edit>Premium market; restaurants pay $4–5/lb; Cherokee Purple best in Zone 7b heat; Florida weave stake</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A1</td><td data-edit>San Marzano + Paste Types</td><td data-edit>6</td><td data-edit>Start indoors Mar 1; transplant May 1</td><td data-edit>Aug–Oct</td><td data-edit>$3,000</td><td data-edit>Sell by the case ($30–40) to restaurant accounts; sauce and roasting type</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A1</td><td data-edit>Basil (Genovese + Thai + Purple Ruffles)</td><td data-edit>4</td><td data-edit>Start Mar 15; transplant Apr 15</td><td data-edit>Jun–Oct</td><td data-edit>$2,500</td><td data-edit>Most profitable annual herb; Thai basil for Asian seafood; purple adds market table color</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A2 — CUCUMBERS + SQUASH (Year A &middot; swap with A1 Year B)</td></tr>
+        <tr><td data-edit>A2</td><td data-edit>Cucumbers (Marketmore, Diva seedless, Lemon)</td><td data-edit>12</td><td data-edit>Direct seed or transplant May 1</td><td data-edit>Jun–Sep</td><td data-edit>$4,000</td><td data-edit>Diva seedless for restaurant sales; Lemon cucumber strong market novelty; succession every 3 weeks</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A2</td><td data-edit>Summer Squash (Costata Romanesco, Zephyr, Pattypan)</td><td data-edit>10</td><td data-edit>Direct seed May 1</td><td data-edit>Jun–Sep</td><td data-edit>$3,500</td><td data-edit>Pick small 6–8 in. for restaurant quality; harvest every 2 days at peak; Zephyr bicolor is novelty</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A2</td><td data-edit>Edamame (Envy variety)</td><td data-edit>6</td><td data-edit>Direct seed May 15</td><td data-edit>Aug</td><td data-edit>$800</td><td data-edit>70-day crop; restaurant demand growing for fresh edamame; fills timing gaps between cucumber cycles</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A3 — PEPPERS + HIGH-VALUE HERBS (Year A &middot; swap with A4 Year B)</td></tr>
+        <tr><td data-edit>A3</td><td data-edit>Shishito + Jimmy Nardello Peppers</td><td data-edit>8</td><td data-edit>Start Mar 1; transplant May 1</td><td data-edit>Jul–Oct</td><td data-edit>$4,000</td><td data-edit>Shishito: restaurant darling, blistered in oil; Jimmy Nardello: sweet frying pepper, commands premium</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A3</td><td data-edit>Bell + Sweet Peppers (Carmen, Gypsy, Corno di Toro)</td><td data-edit>8</td><td data-edit>Start Mar 1; transplant May 1</td><td data-edit>Jul–Oct</td><td data-edit>$3,500</td><td data-edit>Carmen and Corno di Toro ripen earlier than standard bell; preferred by chefs</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A3</td><td data-edit>Hot Peppers (Cayenne, Hungarian Wax, Fresno)</td><td data-edit>4</td><td data-edit>Start Mar 1; transplant May 1</td><td data-edit>Aug–Oct</td><td data-edit>$1,500</td><td data-edit>Dry excess for dried pepper bundles; cayenne dries easily for winter market product</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A3</td><td data-edit>Basil + Summer Savory</td><td data-edit>4</td><td data-edit>Start Mar 15; transplant Apr 15</td><td data-edit>Jun–Oct</td><td data-edit>$1,000</td><td data-edit>Summer savory: classic with green beans and seafood; uncommon at VA markets — fills a gap</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A4 — KALE + COOKING GREENS (Year A &middot; swap with A3 Year B)</td></tr>
+        <tr><td data-edit>A4</td><td data-edit>Lacinato / Dinosaur Kale</td><td data-edit>8</td><td data-edit>Start Feb 15; transplant Mar 15. Aug 15 for fall.</td><td data-edit>Mar–Dec</td><td data-edit>$3,000</td><td data-edit>Most restaurant-preferred kale variety; near year-round in Zone 7b with succession</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A4</td><td data-edit>Red Russian + Winterbor Kale</td><td data-edit>6</td><td data-edit>Start Feb 15; transplant Mar 15. Aug 15 for fall.</td><td data-edit>Mar–Feb</td><td data-edit>$2,000</td><td data-edit>Winterbor overwinters — provides fresh greens Feb–Mar when almost nothing else available at market</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A4</td><td data-edit>Swiss Chard (Rainbow, Bright Lights)</td><td data-edit>6</td><td data-edit>Start Mar 15; transplant Apr 15</td><td data-edit>Apr–Nov</td><td data-edit>$1,500</td><td data-edit>Bright stems sell on appearance alone; restaurants love for color; succession sow every 6 weeks</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A4</td><td data-edit>Asian Greens (Tatsoi, Mizuna, Pac Choi)</td><td data-edit>4</td><td data-edit>Direct seed Aug 1 for fall crop</td><td data-edit>Sep–Nov</td><td data-edit>$500</td><td data-edit>Strong restaurant demand for Asian-influenced seafood preparations; two windows only (spring + fall)</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A5 — SALAD MIX + LETTUCE (Year A &middot; swap with A6 Year B)</td></tr>
+        <tr><td data-edit>A5</td><td data-edit>Mesclun Salad Mix (mixed varieties, succession)</td><td data-edit>12</td><td data-edit>Direct seed Mar 15; succession every 2–3 wks through Jun. Restart Aug 15.</td><td data-edit>Apr–Jun, Sep–Nov</td><td data-edit>$6,000</td><td data-edit>Highest revenue per square foot of any crop. Broadcast seed; cut-and-come-again at 4 in. Restaurants buy by lb weekly.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A5</td><td data-edit>Butterhead + Bibb Lettuce (Buttercrunch, Tom Thumb)</td><td data-edit>8</td><td data-edit>Start Feb 15; transplant Mar 15. Succession every 3 wks.</td><td data-edit>Apr–Jun, Sep–Oct</td><td data-edit>$3,500</td><td data-edit>Whole heads at market; Tom Thumb miniature head ideal for single-serve restaurant portions</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A5</td><td data-edit>Romaine + Little Gem (Flashy Butter Oak, Redina)</td><td data-edit>6</td><td data-edit>Start Feb 15; transplant Mar 15</td><td data-edit>Apr–Jun, Sep–Oct</td><td data-edit>$2,500</td><td data-edit>Little Gem is restaurant-favorite compact romaine for composed salads; succession plant every 3 weeks</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A5</td><td data-edit>Arugula (Astro + wild rocket)</td><td data-edit>2</td><td data-edit>Direct seed Mar 15; succession every 2 wks</td><td data-edit>Apr–Jun, Sep–Oct</td><td data-edit>$640</td><td data-edit>Wild rocket slower to bolt; restaurants prize for peppery flavor with seafood; two windows only</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A6 — CARROTS + BEETS + GARLIC (Year A &middot; swap with A5 Year B)</td></tr>
+        <tr><td data-edit>A6</td><td data-edit>Carrots (Nantes, Chantenay, Danvers 126)</td><td data-edit>10</td><td data-edit>Direct seed Apr 1 + Jul 15</td><td data-edit>Jun, Oct–Nov</td><td data-edit>$3,500</td><td data-edit>Nantes for fresh market; thin to 3 in.; restaurants want bunched with tops; flame weed before emergence</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A6</td><td data-edit>Beets (Chioggia, Touchstone Gold, Detroit Dark Red)</td><td data-edit>8</td><td data-edit>Direct seed Apr 1 + Jul 1</td><td data-edit>Jun, Oct–Nov</td><td data-edit>$2,500</td><td data-edit>Chioggia and Gold are market draws — sell on appearance. Sell greens separately ($3/bunch). Roasted beet salad essential in this region.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A6</td><td data-edit>Hardneck Garlic (Music, German Extra Hardy)</td><td data-edit>8</td><td data-edit>Plant cloves Oct 1–15; mulch 4 in. straw</td><td data-edit>May (scapes), Jun (bulbs)</td><td data-edit>$1,000</td><td data-edit>Scapes in May: near-zero competition, $5–8/bunch. Seed garlic sells $15–20/lb to other growers. Cure 3 weeks before selling.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A6</td><td data-edit>Radishes (French Breakfast, Watermelon/Shinrimei)</td><td data-edit>6</td><td data-edit>Direct seed Apr 15 + Sep 1</td><td data-edit>May, Oct</td><td data-edit>$500</td><td data-edit>25-day gap filler; Watermelon radish genuine novelty — pink interior revealed when sliced</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A7 — BROCCOLI + CABBAGE (Year A &middot; swap with A8 Year B)</td></tr>
+        <tr><td data-edit>A7</td><td data-edit>Broccoli (Belstar spring, Arcadia fall)</td><td data-edit>10</td><td data-edit>Spring: start Feb 15, transplant Mar 15. Fall: start Jun 15, transplant Jul 15.</td><td data-edit>May–Jun, Sep–Nov</td><td data-edit>$4,000</td><td data-edit>Double-crop spring and fall. Arcadia cold-hardy — harvest November. Side shoots after main head = weeks more harvest.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A7</td><td data-edit>Cabbage (EJ Wakefield, Mammoth Red Rock, Savoy)</td><td data-edit>8</td><td data-edit>Spring: start Feb; transplant Mar. Fall: start Jul; transplant Aug.</td><td data-edit>May–Jun, Oct–Nov</td><td data-edit>$2,500</td><td data-edit>Red cabbage coleslaw with crab = Northern Neck coastal staple. Savoy preferred by chefs for texture.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A7</td><td data-edit>Kohlrabi + Turnips (Hakurei Japanese)</td><td data-edit>6</td><td data-edit>Direct seed Apr 1 + Jul 15</td><td data-edit>May, Oct</td><td data-edit>$1,500</td><td data-edit>Kohlrabi is market novelty; Hakurei turnip restaurant-quality — sweet and tender at golf-ball size. Quick 40-day crop.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A7</td><td data-edit>Florence Fennel (annual bulbing type)</td><td data-edit>2</td><td data-edit>Direct seed Jun 1 for fall harvest</td><td data-edit>Sep–Oct</td><td data-edit>$500</td><td data-edit>Annual bulbing fennel — distinct from perennial herb fennel in P1. Fall crop only Zone 7b. Strong seafood pairing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">A8 — BEANS + PEAS + SPINACH (Year A &middot; swap with A7 Year B)</td></tr>
+        <tr><td data-edit>A8</td><td data-edit>Sugar Snap Peas (Sugar Snap, Super Sugar Snap)</td><td data-edit>8</td><td data-edit>Direct seed Mar 1; inoculate with rhizobium; 4–5 ft trellis</td><td data-edit>Apr–Jun</td><td data-edit>$3,500</td><td data-edit>Best warm-season product at April market when nothing else is ready. Short but intense window. Nitrogen-fixing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A8</td><td data-edit>Green + Wax Beans (Provider, Dragon Tongue, Purple Queen)</td><td data-edit>8</td><td data-edit>Direct seed May 1; succession every 3 wks</td><td data-edit>Jun–Sep</td><td data-edit>$2,500</td><td data-edit>Dragon Tongue and Purple Queen sell on appearance. Nitrogen-fixing improves rotation. Succession every 3 weeks.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A8</td><td data-edit>Spinach (Bloomsdale, Tyee, Space)</td><td data-edit>6</td><td data-edit>Direct seed Mar 1 + Aug 15</td><td data-edit>Apr–May, Sep–Nov</td><td data-edit>$900</td><td data-edit>Tyee most bolt-resistant for Zone 7b; Bloomsdale for market; Space for baby leaf cut-and-come-again</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A8</td><td data-edit>Edible Soybeans + Lima Beans (Fordhook)</td><td data-edit>4</td><td data-edit>Direct seed May 15</td><td data-edit>Jul–Aug</td><td data-edit>$480</td><td data-edit>Edamame strong restaurant demand; Fordhook lima is Virginia heritage crop with growing market interest</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">F1 — SPRING + SUMMER FLOWERS (Apr–Aug)</td></tr>
+        <tr><td data-edit>F1</td><td data-edit>Dahlias (dinner plate + ball types)</td><td data-edit>10</td><td data-edit>Plant tubers May 1; stake all</td><td data-edit>Jul–frost</td><td data-edit>$5,000</td><td data-edit>Most valuable cut flower; $2–5/stem; tubers overwintered indoors or heavily mulched in Zone 7b</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F1</td><td data-edit>Zinnias (Benary's Giant + Oklahoma series)</td><td data-edit>8</td><td data-edit>Direct seed May 1; succession every 3 wks</td><td data-edit>Jun–frost</td><td data-edit>$3,000</td><td data-edit>Fastest to first harvest (60 days). Most reliable volume flower for market bouquets.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F1</td><td data-edit>Lisianthus (Echo series)</td><td data-edit>4</td><td data-edit>Start indoors Dec–Jan (150-day crop); transplant Apr</td><td data-edit>Aug–Oct</td><td data-edit>$2,000</td><td data-edit>Premium market flower; resembles roses at fraction of cost; restaurant demand for table arrangements</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F1</td><td data-edit>Celosia (Coral Garden + Pampas Plume)</td><td data-edit>4</td><td data-edit>Transplant May 1</td><td data-edit>Jul–Oct</td><td data-edit>$1,200</td><td data-edit>Unusual texture; both plumed and crested types; dries well for fall market dried product</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="8">F2 — SUMMER + FALL FLOWERS (Jun–Nov)</td></tr>
+        <tr><td data-edit>F2</td><td data-edit>Sunflowers — ProCut series (pollenless)</td><td data-edit>10</td><td data-edit>Direct seed Apr; succession every 2 wks through Jul</td><td data-edit>Jun–Sep</td><td data-edit>$4,000</td><td data-edit>ProCut pollenless — no pollen drop on tablecloths. Customers buy sunflowers every week in summer.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F2</td><td data-edit>Cosmos (Xanthos + Versailles series)</td><td data-edit>6</td><td data-edit>Direct seed May 1; succession through Jun</td><td data-edit>Jul–Oct</td><td data-edit>$2,500</td><td data-edit>Versailles series best for cutting length; airy texture fills out arrangements; very productive</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F2</td><td data-edit>Statice + Strawflower (dried bundle market)</td><td data-edit>4</td><td data-edit>Transplant May 1</td><td data-edit>Aug–Oct (fresh) · Oct–Dec (dried)</td><td data-edit>$2,000</td><td data-edit>Hang-dry; sell as dried bundles at fall and holiday markets; fills December gift sales</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F2</td><td data-edit>Amaranth (Hot Biscuits, Coral Fountain)</td><td data-edit>4</td><td data-edit>Transplant May 1</td><td data-edit>Jul–Oct</td><td data-edit>$1,500</td><td data-edit>Dramatic plumes; heat-loving — starts producing when other flowers slow Jul–Aug; seeds edible</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>F2</td><td data-edit>Snapdragons — Rocket series (fall crop)</td><td data-edit>2</td><td data-edit>Transplant Jul 15 for Sep–Nov harvest</td><td data-edit>Sep–Nov</td><td data-edit>$1,500</td><td data-edit>Cool-season cut flower; fall market window when summer flowers are done; Rocket series longest-stemmed</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="ann-calendar" class="sub-panel">
+    <p class="sl">Key planting dates &mdash; Zone 7b Lancaster County &middot; last frost Mar 25 &middot; first fall frost Nov 10</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="calendar-table">
+      <thead><tr><th>When</th><th>Crop</th><th>Plot</th><th>Action</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="6">FALL (Starting Sep–Oct for Year 0 setup)</td></tr>
+        <tr><td data-edit>Oct 1–15</td><td data-edit>Hardneck Garlic</td><td data-edit>A6</td><td data-edit>Plant cloves 4–6 in. deep, 6 in. apart. Mulch 4 in. straw immediately.</td><td data-edit>Music + German Extra Hardy. Scapes in May = premium specialty product ($5–8/bunch). Harvest Jun.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Oct 15</td><td data-edit>Cover crop all annual plots</td><td data-edit>All A + F</td><td data-edit>Direct seed Winter Rye (60 lbs/ac) + Crimson Clover (15 lbs/ac)</td><td data-edit>Rye provides winter soil cover; crimson clover fixes 80–120 lbs N/acre; terminate Apr 1 before planting</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">WINTER — INDOOR STARTS (Jan–Feb)</td></tr>
+        <tr><td data-edit>Dec–Jan</td><td data-edit>Lisianthus (Echo series)</td><td data-edit>F1</td><td data-edit>Start indoors at 75°F. 150-day crop — must start now for Aug bloom.</td><td data-edit>Very slow germinator. Start 20% more than needed. Most complex flower start on the farm.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Feb 1</td><td data-edit>Broccoli (Belstar), all lettuce, onions</td><td data-edit>A7, A5</td><td data-edit>Start indoors at 70°F. Transplant when 6 in. tall (approx. Mar 15).</td><td data-edit>Critical timing for spring brassicas. Use heat mat. Paper pot transplanter essential at this scale.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Jan 15–Feb 1</td><td data-edit>Globe Artichoke (Emerald only)</td><td data-edit>P4</td><td data-edit>Start indoors. Transplant Apr 15–May 1 after frost.</td><td data-edit>Emerald variety only — rated perennial Zone 7+. Hilltop position critical — artichokes hate wet feet.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">EARLY SPRING (Mar 1 – Apr 1)</td></tr>
+        <tr><td data-edit>Mar 1</td><td data-edit>Spinach, sugar snap peas, salad mix, arugula</td><td data-edit>A8, A8, A5, A5</td><td data-edit>Direct seed as soon as soil is workable (soil temp 40°F+)</td><td data-edit>Sugar snap peas: install 4–5 ft trellis and inoculate with rhizobium. Salad mix: broadcast seed, succession every 2–3 wks.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Mar 1</td><td data-edit>Cilantro (spring window)</td><td data-edit>P1</td><td data-edit>Direct seed in perennial plot P1. Spring window only — never sow in summer heat.</td><td data-edit>Second seeding Aug 15 for fall window. Self-seeds and becomes permanent fixture after Year 1.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Mar 15</td><td data-edit>Broccoli, lettuce transplants</td><td data-edit>A7, A5</td><td data-edit>Transplant from indoor starts. Paper pot transplanter for lettuce.</td><td data-edit>Begin lettuce succession every 3 weeks from this date through June 1.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Apr 1</td><td data-edit>Carrots, beets, kohlrabi, radishes</td><td data-edit>A6, A6, A7, A6</td><td data-edit>Direct seed. Flame weed carrot and beet beds 10 days after seeding before crop emerges.</td><td data-edit>Carrots slowest germinators (14–21 days) — do NOT miss this window. Thin carrots to 3 in., beets to 4 in.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Apr 1</td><td data-edit>Dill (first seeding)</td><td data-edit>P1</td><td data-edit>Direct seed April 1 in perennial plot. Succession sow every 3 weeks May–Aug.</td><td data-edit>Will self-seed and become permanent fixture after Year 1. Classic crab herb. Sell fronds AND seed heads.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Apr 15</td><td data-edit>Basil (all types)</td><td data-edit>A1, A3</td><td data-edit>Transplant from indoor starts (started Mar 15)</td><td data-edit>Most profitable annual herb. Thai basil for Asian seafood preparations. Purple Ruffles adds market table color.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">WARM SEASON (May 1 – Jun 1 after last frost Mar 25)</td></tr>
+        <tr><td data-edit>May 1</td><td data-edit>Tomatoes, peppers, cucumbers, summer squash, green beans</td><td data-edit>A1, A3, A2, A2, A8</td><td data-edit>Transplant tomatoes and peppers (started indoors Mar 1). Direct seed cucumbers, squash, beans.</td><td data-edit>All warm-season crops after last frost. Stake/cage tomatoes at planting. Direct seed cucumbers and squash; succession beans every 3 weeks.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>May 1–15</td><td data-edit>Turmeric and ginger rhizomes</td><td data-edit>P4</td><td data-edit>Plant after soil reaches 65°F (use thermometer). 4–6 in. deep, 12–18 in. spacing.</td><td data-edit>Do NOT rush — cold soil causes rhizome rot. Mulch with 6+ in. straw immediately after planting.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>May 15</td><td data-edit>Edamame (both plots)</td><td data-edit>A2, A8</td><td data-edit>Direct seed May 15</td><td data-edit>Quick 65-day crop. Harvest when pods feel full but still green. Restaurant demand growing for fresh edamame.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Jun 1</td><td data-edit>Florence fennel (annual bulb type)</td><td data-edit>A7</td><td data-edit>Direct seed Jun 1 for Sep–Oct fall harvest</td><td data-edit>Annual bulbing fennel — distinct from perennial herb fennel. Fall crop only in Zone 7b. Strong seafood pairing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr class="group"><td colspan="6">FALL SUCCESSION (Jul–Aug)</td></tr>
+        <tr><td data-edit>Jul 15</td><td data-edit>Fall broccoli (Arcadia)</td><td data-edit>A7</td><td data-edit>Start indoors Jun 15; transplant Jul 15</td><td data-edit>Fall broccoli often better quality than spring; Arcadia cold-hardy; harvest into November</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Jul 15</td><td data-edit>Snapdragons (Rocket series for fall)</td><td data-edit>F2</td><td data-edit>Transplant Jul 15 for Sep–Nov harvest</td><td data-edit>Cool-season cut flower; fills fall market window when summer flowers are done</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Aug 1</td><td data-edit>Asian greens (tatsoi, mizuna, pac choi)</td><td data-edit>A4</td><td data-edit>Direct seed Aug 1</td><td data-edit>Fast-growing cool-season greens; strong restaurant demand for Asian-influenced seafood preparations</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Aug 15</td><td data-edit>Fall salad mix, fall spinach, fall kale transplants</td><td data-edit>A5, A8, A4</td><td data-edit>Direct seed salad mix and spinach. Transplant kale (started Jul 25).</td><td data-edit>Fall window is often more productive than spring. Kale overwinters — provides fresh greens Feb–Mar. Spinach overwinters under row cover.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Aug 15</td><td data-edit>Cilantro (fall window)</td><td data-edit>P1</td><td data-edit>Second direct seeding in perennial plot P1. Fall window Aug–Oct.</td><td data-edit>Never sow in summer — bolts immediately in heat. Only two windows: spring (Mar 1) and fall (Aug 15).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Jul 1 + Sep 1</td><td data-edit>Beets, carrots, radishes (succession)</td><td data-edit>A6</td><td data-edit>Direct seed second succession for fall harvest</td><td data-edit>Jul 1 beets harvest Oct–Nov. Jul 15 carrots harvest Oct–Nov. Sep 1 radishes harvest Oct. Succession is key.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div id="ann-rotation" class="sub-panel">
+    <p class="sl">Rotation rules &mdash; disease management and soil health</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="rotation-table">
+      <thead><tr><th>Plot A (Year A)</th><th>Plot B (Year A)</th><th>Swap Year B</th><th>Min. gap</th><th>Disease concern</th><th>What follows well</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>A1 Tomatoes + basil</td><td data-edit>A2 Cucumbers + squash</td><td data-edit>Yes — full swap</td><td data-edit>2 years</td><td data-edit>Early blight, fusarium — persist 2 years in soil. Heavy feeders.</td><td data-edit>Legumes (A8) fix N; brassicas (A7) different pest complex</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A3 Peppers + herbs</td><td data-edit>A4 Kale + greens</td><td data-edit>Yes — full swap</td><td data-edit>2 years</td><td data-edit>Peppers: bacterial spot, phytophthora. Brassicas: black rot, clubroot.</td><td data-edit>Peppers follow brassicas — good disease break; brassicas follow peppers for same reason</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A5 Salad mix + lettuce</td><td data-edit>A6 Carrots + beets + garlic</td><td data-edit>Yes — full swap</td><td data-edit>1 year</td><td data-edit>Salad: minimal carryover. Root crops: carrot rust fly, alternaria.</td><td data-edit>Almost anything follows salad; root crops follow salad well</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>A7 Broccoli + cabbage</td><td data-edit>A8 Beans + peas + spinach</td><td data-edit>Yes — full swap</td><td data-edit>3 years preferred</td><td data-edit>Brassica clubroot (Plasmodiophora) persists 20 years. Black rot. Confirm no clubroot history before establishing.</td><td data-edit>Legumes fix nitrogen — brassicas benefit greatly from following N-fixing crops</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>All plots Oct–Apr</td><td data-edit>Cover crop (winter rye + crimson clover)</td><td data-edit>Every year</td><td data-edit>—</td><td data-edit>Rye suppresses weeds; crimson clover fixes 80–120 lbs N/acre; spring biomass = green manure</td><td data-edit>Everything benefits from the N boost and improved soil structure</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Alliums (garlic, A6)</td><td data-edit>Rotate to avoid same ground</td><td data-edit>3 years minimum</td><td data-edit>3 years</td><td data-edit>White rot (Sclerotium cepivorum) persists 20+ years if established — never return alliums to infected ground</td><td data-edit>Garlic leaves clean ground; most crops follow well</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn">BRASSICA CLUBROOT WARNING: Before establishing A4 and A7, confirm no history of clubroot on the Edgehill property. If present, this pathogen persists for 20 years and makes brassica production in that ground effectively impossible. Test with indicator plants (Chinese cabbage) before committing to these plots. If clean, maintain strict 3-year rotation and keep pH at or above 7.0 in brassica plots to suppress clubroot development.</div>
+  </div>
+
+  <div id="ann-tools" class="sub-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <p class="sl" style="margin:0">Tools for annual garden &mdash; edit freely</p>
+      <button class="btn btn-add" onclick="addRow('ann-tools-table',5)">+ Add tool</button>
+    </div>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="ann-tools-table">
+      <thead><tr><th>Tool</th><th>Cost</th><th>Priority</th><th>Use</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Paper pot transplanter (264-cell chains)</td><td data-edit>~$1,200</td><td data-edit>HIGH</td><td data-edit>Lettuce, brassicas, allions — transplant 264 starts in one row pass</td><td data-edit>Reduces transplant time from 2 hours to 20 minutes per bed. Essential at 8-plot scale. Buy before first transplant season.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Jang JP-1 precision seeder</td><td data-edit>~$280</td><td data-edit>HIGH</td><td data-edit>Carrots, beets, spinach, salad mix, beans — all direct-seeded crops</td><td data-edit>Interchangeable rollers for all seed sizes. Accurate spacing dramatically improves germination and thinning labor.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Wheel hoe + stirrup (hula) blade</td><td data-edit>~$200</td><td data-edit>HIGH</td><td data-edit>Between-row cultivation after seeding emergence</td><td data-edit>Use in combination with flame weeder. Flame before emergence, wheel hoe after. Eliminates 90% of hand weeding.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Flame weeder (propane)</td><td data-edit>~$300</td><td data-edit>HIGH</td><td data-edit>Pre-emergence flaming in carrot and beet beds</td><td data-edit>Flame 10 days after seeding, before carrots emerge. Single biggest yield improvement for root crops. Kills first weed flush completely.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Walk-in cooler (CoolBot mod)</td><td data-edit>~$500–600 DIY · or $6–10k built</td><td data-edit>HIGH</td><td data-edit>Hold produce at 34–38°F from harvest to market day</td><td data-edit>Modified chest freezer with CoolBot controller = $500 vs $8,000 walk-in. Without it, July market table quality suffers badly.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Drip tape + timer per plot</td><td data-edit>~$200–400/plot installed</td><td data-edit>HIGH</td><td data-edit>Irrigation at 12-in emitter spacing on timer</td><td data-edit>Timer runs at 6 AM before heat. Reduces water use 30% vs overhead. Eliminates foliar disease from wet leaves.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Row cover + wire hoops (Reemay 0.9 oz)</td><td data-edit>~$0.04–0.06/sq ft</td><td data-edit>MED</td><td data-edit>Season extension and pest control</td><td data-edit>Extends season 4–6 weeks in both directions. Protects Feb–Mar transplants from frost. Controls cabbage moths on brassicas without spray.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>NTEP-certified market scale</td><td data-edit>~$300–400</td><td data-edit>HIGH</td><td data-edit>Legal-for-trade sales at Virginia farmers markets</td><td data-edit>Required by Virginia law for selling by weight at farmers markets. Must display VA Dept of Agriculture certification tag. Calibrate annually.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Harvest bins + wash station</td><td data-edit>~$20–40/crate · $200–500 wash setup</td><td data-edit>HIGH</td><td data-edit>Field harvest and post-harvest washing</td><td data-edit>Ventilated Harvest crates in field; stainless wash tank with brush + spray; salad spinner for greens. Quality control starts here.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Market canopy + tables + signage</td><td data-edit>~$600–1,000</td><td data-edit>MED</td><td data-edit>Market stand presentation</td><td data-edit>10×10 ft canopy; folding tables; branded chalkboard signs. Professional presentation is the single highest-ROI investment for a new farm stand.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>5-gallon flower conditioning buckets</td><td data-edit>~$10 each (need 20+)</td><td data-edit>MED</td><td data-edit>Flower field harvest and conditioning</td><td data-edit>Condition all stems 8–12 hours in cooler before market. Dahlias drink heavily — cut stems underwater, place immediately in deep water.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+  <div id="ann-infra" class="sub-panel">
+    <p class="sl">Market garden infrastructure &mdash; tunnels, tarps, row cover, and irrigation</p>
+
+    <!-- CATERPILLAR TUNNELS -->
+    <h3>Caterpillar Tunnels</h3>
+    <p style="font-size:12px;color:#555;margin:6px 0 10px;line-height:1.6">50-foot commercial tunnel kits oriented <strong>across the 50-ft width</strong> of each plot &mdash; one tunnel spans all 32 planted rows simultaneously. Multiple tunnels positioned at intervals along the 100-ft plot depth. This gives you the ability to cover specific row zones (early transplants, overwintering crops, seedling protection) without covering the entire plot.</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="tunnels-table">
+      <thead><tr><th>Item</th><th>Qty</th><th>Unit cost</th><th>Total</th><th>Priority</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>50-ft commercial caterpillar tunnel kit (hoops + ground stakes + wiggle wire channel)</td><td data-edit>16 kits (2 per active plot)</td><td data-edit>$280&ndash;350/kit</td><td data-edit>$4,500&ndash;5,600</td><td data-edit><span style="color:#c0392b;font-weight:600">BEFORE SPRING</span></td><td data-edit>Bootstrap Farmer, Farmers Friend, or Nolt's Produce Supplies. Each kit spans 50 ft across the full plot width. 2 kits per plot covers roughly 20 ft of the 100-ft depth per positioning. Move and reposition as needed through the season. Wiggle wire channel holds cover fabric securely against wind.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Ground anchor stakes (extra, for windy conditions)</td><td data-edit>100</td><td data-edit>$0.80 each</td><td data-edit>$80</td><td data-edit>MED</td><td data-edit>Northern Neck can get significant wind off the Chesapeake and Rappahannock. Extra anchoring stakes prevent tunnels from lifting or collapsing. Drive at 3-ft intervals along both sides.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>End closure panels (fabric or snap-button ends)</td><td data-edit>32 ends (2 per tunnel &times; 16 tunnels)</td><td data-edit>Included in kit or $15 each</td><td data-edit>Included or $480</td><td data-edit>HIGH</td><td data-edit>Tunnel ends must be closeable for frost protection. Open for ventilation on warm days. Snap-button fabric ends are fastest. Without closed ends a caterpillar tunnel provides minimal frost protection &mdash; wind blows through.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- SILAGE TARPS -->
+    <h3 style="margin-top:16px">Silage Tarps</h3>
+    <p style="font-size:12px;color:#555;margin:6px 0 10px;line-height:1.6">One 50&times;100 ft tarp per plot. Your primary bed-prep and weed-termination tool. In September, get all 14 tarps down immediately on any area being prepared for perennial planting. 3&ndash;6 weeks under a tarp in September heat kills existing vegetation, terminates cover crops, and leaves clean moist soil ready for planting &mdash; no herbicide, no tillage beyond your BCS pass.</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="tarps-table">
+      <thead><tr><th>Item</th><th>Qty</th><th>Unit cost</th><th>Total</th><th>Priority</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit>Silage tarp 50&times;100 ft (5.5 mil black polyethylene, UV-stabilized)</td><td data-edit>14 (one per active plot)</td><td data-edit>$140&ndash;180 each</td><td data-edit>$1,960&ndash;2,520</td><td data-edit><span style="color:#c0392b;font-weight:600">DAY 1 &mdash; SEPTEMBER</span></td><td data-edit>Bootstrap Farmer or Dubois Agrinovation. Order all 14 before you arrive in September &mdash; have them waiting. Black side down (soil contact), white/silver side up (reflects heat in summer, holds heat in winter). Get them on bare ground the first week.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>UV-resistant sandbags (to hold tarp edges)</td><td data-edit>200</td><td data-edit>$1.50 each</td><td data-edit>$300</td><td data-edit>HIGH</td><td data-edit>Fill with sand or gravel on-site. Place every 6&ndash;8 ft along all four edges. Sandbags are reusable for years. Do not use rocks &mdash; they puncture tarps. Wind will lift even a 50&times;100 ft tarp off the ground if edges are not weighted continuously.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Tarp repair tape (Gorilla or Nashua 357)</td><td data-edit>4 rolls</td><td data-edit>$12 each</td><td data-edit>$48</td><td data-edit>MED</td><td data-edit>Tarps get punctures from rocks, equipment, and wildlife. Repair immediately &mdash; small holes become large tears. Keep tape in the barn with the tarps.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ROW COVER -->
+    <h3 style="margin-top:16px">Row Cover Fabric &mdash; Three Weights, Three Purposes</h3>
+    <p style="font-size:12px;color:#555;margin:6px 0 10px;line-height:1.6">Buy in 250-ft rolls and cut to length &mdash; per-foot cost drops 35&ndash;40% vs. buying short pieces. All three weights are needed; they are not interchangeable.</p>
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="rowcover-table">
+      <thead><tr><th>Fabric</th><th>Weight</th><th>Frost protection</th><th>Light transmission</th><th>Primary use</th><th>Roll cost (250 ft &times; 83 in wide)</th><th>Qty needed</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr><td data-edit><strong>Agribon AG-19</strong> (or equivalent 0.55 oz)</td><td data-edit>Lightest</td><td data-edit>2&ndash;3&deg;F protection</td><td data-edit>85% light</td><td data-edit>Spring + summer insect exclusion (cabbage moths on brassicas, flea beetles on greens). Use over salad mix and kale from transplant to canopy closure. Also for light frost on tender transplants Apr&ndash;May.</td><td data-edit>~$180&ndash;220/roll</td><td data-edit>3 rolls</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Agribon AG-30</strong> (or equivalent 0.9 oz)</td><td data-edit>Medium</td><td data-edit>4&ndash;6&deg;F protection</td><td data-edit>70% light</td><td data-edit>Overwintering kale, spinach, and salad mix Nov&ndash;Mar. The most-used fabric on the farm &mdash; this is what extends the season 4&ndash;6 weeks in both directions. Under caterpillar tunnels for maximum frost protection in Jan&ndash;Feb.</td><td data-edit>~$190&ndash;230/roll</td><td data-edit>4 rolls</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Agribon AG-50</strong> (or equivalent 1.5 oz)</td><td data-edit>Heavy</td><td data-edit>8&ndash;10&deg;F protection</td><td data-edit>50% light</td><td data-edit>Hard freeze events Jan&ndash;Feb (Zone 7b occasionally hits 15&ndash;18&deg;F). Used over the tunnel fabric for extreme events only. Also for protecting newly planted perennial crowns their first winter. Not used for growing-season light transmission.</td><td data-edit>~$210&ndash;260/roll</td><td data-edit>2 rolls</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Sandbag anchors for fabric (shared with tarps)</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>Use the same sandbags that hold silage tarps to anchor row cover edges when not using caterpillar tunnels. Avoid using soil &mdash; it cements fabric edges and tears them on removal.</td><td data-edit>Shared cost</td><td data-edit>&mdash;</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- IRRIGATION SYSTEM -->
+    <h3 style="margin-top:16px">Automated Drip Irrigation System</h3>
+    <p style="font-size:12px;color:#555;margin:6px 0 10px;line-height:1.6">One zone per plot (14&ndash;16 zones total), controlled by soil moisture sensors, managed through a custom app built on ESP32 + Firebase + React Native. The physical system is permanent infrastructure; the controller nodes and app can be built and added incrementally.</p>
+
+    <div style="background:#f8f7f4;border-radius:6px;padding:12px 14px;margin-bottom:10px;font-size:12px;border:.5px solid var(--border)">
+      <strong style="display:block;margin-bottom:6px">System architecture (well pump &rarr; field &rarr; app)</strong>
+      <code style="font-size:11px;color:#1a4a3d;line-height:2;display:block">
+        Well pump &rarr; Pressure tank &rarr; Master shutoff<br>
+        &nbsp;&nbsp;&rarr; 150-mesh disc filter &rarr; 12 PSI pressure regulator<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&rarr; 16-station zone manifold (solenoid valves)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; Plot header (1/2-in poly mainline)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; Drip tape runs (32 rows &times; 50 ft per plot)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; ESP32 node reads soil moisture sensors &rarr; triggers valve relay<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; MQTT &rarr; Raspberry Pi (local broker) &rarr; Firebase &rarr; React Native app
+      </code>
+    </div>
+
+    <div class="tbl-wrap">
+    <table class="tbl" data-table="irrigation-physical-table">
+      <thead><tr><th>Component</th><th>Spec</th><th>Qty</th><th>Unit cost</th><th>Total</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="7">PHYSICAL IRRIGATION &mdash; Pipe, Tape, Valves</td></tr>
+        <tr><td data-edit>150-mesh disc filter (master)</td><td data-edit>3/4-in, self-cleaning</td><td data-edit>1</td><td data-edit>$45</td><td data-edit>$45</td><td data-edit>Critical &mdash; drip tape emitters clog easily. Clean monthly during season. A single particle of debris can block an emitter and you won't notice until a row dies.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Pressure regulator (master)</td><td data-edit>12&ndash;15 PSI, 3/4-in</td><td data-edit>1</td><td data-edit>$35</td><td data-edit>$35</td><td data-edit>Drip tape is rated for 8&ndash;15 PSI. Your well pump likely delivers 40&ndash;60 PSI &mdash; without a regulator you will blow out every emitter connection in the field.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Solenoid valves (Rain Bird 100-HV or equivalent)</td><td data-edit>24VAC, 3/4-in, normally closed</td><td data-edit>16</td><td data-edit>$18 each</td><td data-edit>$288</td><td data-edit>One per zone (plot). Normally closed &mdash; fails safe (off) if power is cut. 24VAC is the irrigation standard &mdash; the controller supplies this voltage. Wire together at a manifold in a weatherproof box at the head of the field.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>3/4-in poly mainline (well to manifold)</td><td data-edit>Rated 80 PSI, black poly</td><td data-edit>Per distance</td><td data-edit>$0.80/ft</td><td data-edit>Distance-dependent</td><td data-edit>Run in a trench (mini excavator) to protect from UV and mechanical damage. Bury minimum 6 in. Install a drain valve at the lowest point for winterizing.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>1/2-in poly header per plot</td><td data-edit>Standard poly header pipe</td><td data-edit>14 plots &times; 50 ft</td><td data-edit>$0.30/ft</td><td data-edit>$210</td><td data-edit>Runs along one end of each plot, connecting to each drip tape row. Barbed fittings for drip tape connection. Use goof plugs for any unused ports.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Drip tape (T-Tape 515-12-340 or equivalent)</td><td data-edit>15-mil, 12-in emitter spacing, 0.34 GPH/emitter</td><td data-edit>32 rows &times; 50 ft &times; 14 plots = 22,400 ft</td><td data-edit>$0.05/ft</td><td data-edit>$1,120</td><td data-edit>12-in emitter spacing suits all annual crops. Replace drip tape every 2&ndash;4 seasons &mdash; it degrades in UV and clogs over time. Keep 500 ft of spare on hand. End-cap every row; flush the system monthly.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Drip tape connectors, barbed tees, end caps</td><td data-edit>Barbed fittings for 15-mil tape</td><td data-edit>Per plot kit</td><td data-edit>$15/plot</td><td data-edit>$210</td><td data-edit>Buy 20% overage &mdash; connectors pull loose and are the most common field repair. Keep a bag of connectors and end caps in the barn at all times.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Physical irrigation subtotal</strong></td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit><strong>~$2,000&ndash;2,800</strong></td><td data-edit>Excludes mainline distance from well and labor for trenching (mini excavator handles this)</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+
+        <tr class="group"><td colspan="7">CONTROLLER NODES &mdash; ESP32 + Sensors (16 zones)</td></tr>
+        <tr><td data-edit>ESP32 development board (38-pin, WROOM)</td><td data-edit>WiFi built-in, dual-core</td><td data-edit>16</td><td data-edit>$10 each</td><td data-edit>$160</td><td data-edit>Main controller per zone. Reads sensors, makes irrigation decisions locally (fallback if cloud is unreachable), and reports to Firebase. Buy 4 spares &mdash; they are inexpensive and field-replaceable.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>4-channel relay module (optoisolated, 5V)</td><td data-edit>For triggering 24VAC solenoids</td><td data-edit>16</td><td data-edit>$8 each</td><td data-edit>$128</td><td data-edit>Optoisolated is critical &mdash; it prevents solenoid switching transients from damaging the ESP32. Each relay board handles up to 4 zones; 1 board per zone node for modularity and easy replacement.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Capacitive soil moisture sensor v1.2</td><td data-edit>Capacitive type (NOT resistive)</td><td data-edit>32 (2 per zone)</td><td data-edit>$5 each</td><td data-edit>$160</td><td data-edit>MUST be capacitive &mdash; resistive sensors corrode in soil within 6 months. Place 2 per zone at different depths (3-in and 8-in) to distinguish surface dry from root-zone dry. Calibrate per soil type: measure voltage in dry soil and saturated soil to set 0% and 100% VWC endpoints.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>DS18B20 waterproof soil temperature sensor</td><td data-edit>1-wire protocol, stainless probe</td><td data-edit>16 (1 per zone)</td><td data-edit>$4 each</td><td data-edit>$64</td><td data-edit>Soil temp at 4-in depth. Used to prevent irrigation when soil is &lt;40&deg;F (frozen or near-frozen soil doesn't absorb water). Also useful for planting decisions (turmeric, ginger won't go in until 65&deg;F).</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>24VAC transformer (per manifold section)</td><td data-edit>24VAC, 1A minimum</td><td data-edit>4 (1 per 4-zone section)</td><td data-edit>$18 each</td><td data-edit>$72</td><td data-edit>Powers solenoid valves. One transformer per 4-zone section is cleaner than one per zone. Run 18-gauge 2-conductor wire from transformer to each solenoid.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Weatherproof enclosure (IP65, ~150&times;100&times;70 mm)</td><td data-edit>Polycarbonate, IP65 rated</td><td data-edit>16</td><td data-edit>$14 each</td><td data-edit>$224</td><td data-edit>Houses ESP32 + relay + power supply per zone. Mount on a stake at plot edge. Seal all cable entries with weatherproof cable glands. Northern Neck humidity and rain are aggressive &mdash; IP65 minimum, IP67 preferred.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>5V USB power supply (weatherproof, per node)</td><td data-edit>5V 2A, IP65 or conformal-coated</td><td data-edit>16</td><td data-edit>$12 each</td><td data-edit>$192</td><td data-edit>Powers ESP32 + sensors. Run 12V DC from barn via buried cable and step down with a buck converter per node, OR run standard 120V to weatherproof outlets in the field. The latter is simpler if you're running buried conduit for the solenoid wiring anyway.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Controller nodes subtotal</strong></td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit><strong>~$1,000&ndash;1,200</strong></td><td data-edit>Plus spare parts (2&times; ESP32, 4&times; sensors, 2&times; relay boards, weatherproof connectors)</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+
+        <tr class="group"><td colspan="7">FIELD NETWORK &mdash; WiFi coverage for app communication</td></tr>
+        <tr><td data-edit>Ubiquiti UniFi Dream Machine (base router)</td><td data-edit>All-in-one router + controller</td><td data-edit>1</td><td data-edit>$199</td><td data-edit>$199</td><td data-edit>Central router at barn. Manages all UniFi APs. Local dashboard accessible even without internet. Worth the premium over consumer routers &mdash; the UniFi ecosystem is self-managing and field APs auto-configure when added.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Ubiquiti UAP-AC-M outdoor mesh AP</td><td data-edit>Dual-band, outdoor rated, mesh capable</td><td data-edit>3</td><td data-edit>$150 each</td><td data-edit>$450</td><td data-edit>Mount on 8-ft wooden posts (treated) across the field. One AP covers ~300 ft radius outdoors. 3 APs provides solid overlapping coverage across 3.2 acres of garden. Powered by PoE from buried Cat6 runs from barn &mdash; trench alongside irrigation mainline.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit>Raspberry Pi 4 (local MQTT broker + edge compute)</td><td data-edit>2GB RAM, 32GB SD card</td><td data-edit>1</td><td data-edit>$45 + $12 SD</td><td data-edit>$57</td><td data-edit>Runs Mosquitto MQTT broker locally. Even if internet is down, the Pi can still receive sensor data and trigger irrigation based on local rules. Also logs all sensor readings to a local SQLite database for historical analysis. Mount in weatherproof enclosure in barn.</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+        <tr><td data-edit><strong>Network subtotal</strong></td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit>&mdash;</td><td data-edit><strong>~$700</strong></td><td data-edit>Plus Cat6 cable for PoE runs (budget $0.20/ft, quantity depends on barn-to-AP distances)</td><td><button class="btn-del" onclick="this.closest('tr').remove()">&#10005;</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div style="background:#f0eefa;border-radius:6px;padding:12px 14px;margin-top:12px;border:.5px solid #c4b0f5">
+      <strong style="display:block;margin-bottom:8px;color:#3d2b7a">App architecture &mdash; ESP32 + Firebase + React Native</strong>
+      <div style="font-size:12px;color:#444;line-height:1.7">
+        <strong>Stack (uses your existing Kinora tech):</strong> ESP32 firmware (Arduino C++) &rarr; MQTT publish to Raspberry Pi (Mosquitto broker) &rarr; Pi bridges to Firebase Realtime DB &rarr; React Native app subscribes &rarr; app commands go back through Firebase &rarr; Pi &rarr; MQTT &rarr; ESP32 &rarr; relay opens valve.<br><br>
+        <strong>App screens to build:</strong><br>
+        &bull; <strong>Dashboard</strong> &mdash; live moisture % per zone, valve state (open/closed), last watered time, rain forecast (OpenWeather API integration)<br>
+        &bull; <strong>Zone rules</strong> &mdash; "irrigate when moisture &lt; 40% VWC, stop at 70%, between 5&ndash;7 AM only, skip if rain forecast &gt; 0.25 in"<br>
+        &bull; <strong>Manual override</strong> &mdash; open any valve for X minutes from the app<br>
+        &bull; <strong>Schedule fallback</strong> &mdash; if sensor fails or MQTT drops, run on time schedule until fixed<br>
+        &bull; <strong>Alerts (push)</strong> &mdash; zone runs &gt;30 min (possible leak), sensor reads 0% (sensor failure), pressure drops (line break)<br>
+        &bull; <strong>History view</strong> &mdash; moisture over time per zone, irrigation events, rain data overlay<br><br>
+        <strong>Sensor calibration (do this before planting):</strong> Put sensor in bone-dry soil, record voltage (= 0% VWC). Put sensor in fully saturated soil, record voltage (= 100% VWC). Map linearly. Calibrate separately for each soil zone &mdash; perennial herb beds vs. asparagus rows will read differently.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
+      <div class="mc"><div class="mc-l">Physical irrigation</div><div class="mc-v">~$2,400</div><div class="mc-s">Pipe, tape, valves, filter, regulator</div></div>
+      <div class="mc"><div class="mc-l">Controller nodes (16)</div><div class="mc-v">~$1,100</div><div class="mc-s">ESP32, relays, sensors, enclosures</div></div>
+      <div class="mc"><div class="mc-l">Field WiFi network</div><div class="mc-v">~$700</div><div class="mc-s">UniFi router + 3 outdoor APs + Pi</div></div>
+      <div class="mc"><div class="mc-l">Total irrigation system</div><div class="mc-v" style="color:#2d5a1b">~$4,200</div><div class="mc-s">Excluding mainline trenching (mini excavator) and Cat6 cable runs</div></div>
+    </div>
+  </div>
+
+<script>
+
+let EDITING=false;
+const STORE_KEY='edgehill-'+location.pathname.split('/').pop().replace('.html','');
+function toggleEdit(){
+  EDITING=!EDITING;
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable=EDITING?'true':'false'; });
+  const bar=document.getElementById('editBar');
+  if(bar) bar.classList.toggle('hidden',!EDITING);
+  const btn=document.getElementById('btnEdit');
+  if(btn) btn.textContent=EDITING?'Done editing':'Edit this section';
+}
+function saveData(){
+  const tables={};
+  document.querySelectorAll('[data-table]').forEach(t=>{ tables[t.dataset.table]=t.innerHTML; });
+  localStorage.setItem(STORE_KEY,JSON.stringify(tables));
+  alert('Saved!');
+}
+function loadData(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  try{
+    const tables=JSON.parse(raw);
+    Object.keys(tables).forEach(k=>{
+      const el=document.querySelector('[data-table="'+k+'"]');
+      if(el)el.innerHTML=tables[k];
+    });
+  }catch(e){}
+}
+function resetData(){
+  if(!confirm('Reset to defaults? All your edits will be lost.'))return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+function addRow(tableId,numCols){
+  const t=document.querySelector('[data-table="'+tableId+'"]');
+  if(!t)return;
+  let tbody=t.querySelector('tbody');
+  if(!tbody){tbody=document.createElement('tbody');t.appendChild(tbody);}
+  const tr=document.createElement('tr');
+  for(let i=0;i<numCols;i++){
+    const td=document.createElement('td');
+    td.setAttribute('data-edit','');
+    td.contentEditable=EDITING?'true':'false';
+    td.textContent='New item';
+    tr.appendChild(td);
+  }
+  const del=document.createElement('td');
+  del.innerHTML='<button class="btn-del" onclick="this.closest(\'tr\').remove()">&#10005;</button>';
+  tr.appendChild(del);
+  tbody.appendChild(tr);
+}
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+window.addEventListener('load',loadData);
+
+
+function subTab(btn,section,panel){
+  const body=btn.closest('.sb');
+  body.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  body.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(section+'-'+panel).classList.add('active');
+}
+
+</script>
+</body>
+</html>
